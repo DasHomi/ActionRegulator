@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "actionregulator",
+  "version": "${version}",
+  "name": "ActionRegulator",
+  "description": "Regulates actions",
+  "authors": ["DasHomi"],
+  "contact": {
+    "issues": "https://github.com/DasHomi/actionregulator/issues",
+    "homepage" : "https://github.com/DasHomi/actionregulator"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/actionregulator/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.dashomi.actionregulator.ActionregulatorClient"
+    ]
+  },
+  "mixins": [
+    "actionregulator.client.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
