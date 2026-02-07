@@ -15,6 +15,9 @@
   "entrypoints": {
     "client": [
       "com.dashomi.actionregulator.ActionregulatorClient"
+    ],
+    "modmenu": [
+      "com.dashomi.actionregulator.config.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -24,5 +27,8 @@
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }
