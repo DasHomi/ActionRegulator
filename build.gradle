@@ -21,6 +21,9 @@ repositories {
         name = "Terraformers"
         url = "https://maven.terraformersmc.com/"
     }
+
+    maven { url 'https://maven.wispforest.io/releases/' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -32,6 +35,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
+    modImplementation "io.wispforest:owo-lib:${project.owo_version}"
 }
 
 processResources {

@@ -1,31 +1,22 @@
 package com.dashomi.actionregulator.config;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.toasts.SystemToast;
+import io.wispforest.owo.ui.base.BaseUIModelScreen;
+import io.wispforest.owo.ui.component.ButtonComponent;
+import io.wispforest.owo.ui.container.FlowLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
-public class ConfigScreen extends Screen {
-    public ConfigScreen(Component title) {
-        super(title);
+import static com.dashomi.actionregulator.ActionregulatorClient.MOD_ID;
+
+public class ConfigScreen extends BaseUIModelScreen<FlowLayout> {
+    public ConfigScreen(Screen parent) {
+        super(FlowLayout.class, DataSource.asset(Identifier.fromNamespaceAndPath(MOD_ID, "config_screen")));
     }
 
     @Override
-    protected void init() {
-        Button buttonWidget = Button.builder(Component.literal("Hello World"), (btn) -> {
-            this.minecraft.getToastManager().addToast(
-                    SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.NARRATOR_TOGGLE, Component.nullToEmpty("Hello World!"), Component.nullToEmpty("This is a toast."))
-            );
-        }).bounds(40, 40, 120, 20).build();
-
-        this.addRenderableWidget(buttonWidget);
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
-
-        graphics.drawString(this.font, "Special Button", 40, 40 - this.font.lineHeight - 10, 0xFFFFFFFF, true);
+    protected void build(FlowLayout rootComponent) {
+        rootComponent.childById(ButtonComponent.class, "the-button").onPress(button -> {
+            System.out.println("click");
+        });
     }
 }
