@@ -1,36 +1,31 @@
 <owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.20/owo-ui.xsd">
     <components>
-        <flow-layout direction="vertical">
-            <children> <!--(1)-->
-                <flow-layout direction="vertical"> <!--(2)-->
-                    <children>
-                        <button id="the-button"> <!--(3)-->
-                            <text>A Button</text> <!--(6)-->
-                        </button>
-                    </children>
-
-                    <horizontal-alignment>center</horizontal-alignment>
-                    <vertical-alignment>center</vertical-alignment>
-
-                    <!--(4)-->
-                    <padding>
-                        <all>10</all>
-                    </padding>
-
-                    <surface>
-                        <panel dark="true"/>
-                    </surface>
+        <flow-layout direction="vertical" id="root">
+            <children>
+                <!-- Module list – entries are added dynamically via ConfigScreen#build -->
+                <flow-layout direction="vertical" id="module-list">
+                    <children></children>
+                    <sizing>
+                        <horizontal method="fill">100</horizontal>
+                        <vertical method="content">0</vertical>
+                    </sizing>
                 </flow-layout>
+
+                <!-- "Add module" button -->
+                <button id="add-module-button">
+                    <text>+ Add Module</text>
+                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                    <margins><top>6</top></margins>
+                </button>
             </children>
-
-            <vertical-alignment>center</vertical-alignment>
-            <horizontal-alignment>center</horizontal-alignment>
-
-            <!--(5)-->
-            <surface>
-                <vanilla-translucent/>
-            </surface>
+            <sizing>
+                <horizontal method="fixed">280</horizontal>
+                <vertical method="content">0</vertical>
+            </sizing>
+            <surface><panel/></surface>
+            <padding><all>10</all></padding>
         </flow-layout>
     </components>
 </owo-ui>
+
