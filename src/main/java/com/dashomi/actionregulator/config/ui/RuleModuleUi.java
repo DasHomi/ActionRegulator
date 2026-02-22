@@ -17,7 +17,6 @@ import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-
 import java.util.List;
 
 public class RuleModuleUi {
@@ -29,7 +28,6 @@ public class RuleModuleUi {
     private static final List<String> ALL_ITEMS = BuiltInRegistries.ITEM.keySet()
             .stream().map(Object::toString).sorted().toList();
 
-    /** Overlay tinted surface to signal a disabled module */
     private static final Surface DISABLED_SURFACE =
             Surface.flat(0x55000000).and(Surface.PANEL);
 
@@ -47,14 +45,13 @@ public class RuleModuleUi {
     public FlowLayout build(ActionRegulatorConfig config, FlowLayout moduleList) {
         FlowLayout card = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         card.surface(rule.enabled ? Surface.PANEL : DISABLED_SURFACE);
-        // extra bottom padding to prevent clipping
+
         card.padding(Insets.of(6, 6, 10, 6));
         card.margins(Insets.bottom(6));
 
         boolean[] collapsed = {false};
         FlowLayout body = buildBody(config, moduleList, card);
 
-        // ── Collapse button (fixed width) ────────────────────────────────────
         ButtonComponent collapseBtn = UIComponents.button(Component.literal("▼"), b -> {
             collapsed[0] = !collapsed[0];
             b.setMessage(Component.literal(collapsed[0] ? "▶" : "▼"));
@@ -62,14 +59,10 @@ public class RuleModuleUi {
         });
         collapseBtn.sizing(Sizing.fixed(20), Sizing.fixed(16));
 
-        // ── Name box (fill remaining space) ──────────────────────────────────
-        // Sizing.fill(100) inside a horizontal flow = 100% of PARENT width → too wide.
-        // Use Sizing.expand() so it takes only the leftover space after fixed siblings.
         TextBoxComponent nameBox = UIComponents.textBox(Sizing.expand(), rule.name);
         nameBox.sizing(Sizing.expand(), Sizing.fixed(16));
         nameBox.onChanged().subscribe(v -> rule.name = v);
 
-        // ── Enable toggle (fixed, rightmost) ─────────────────────────────────
         ButtonComponent enableBtn = UIComponents.button(
                 Component.literal(rule.enabled ? "ON" : "OFF"), b -> {
                     rule.enabled = !rule.enabled;
@@ -109,13 +102,13 @@ public class RuleModuleUi {
         TextBoxComponent notifText = UIComponents.textBox(Sizing.fill(100), rule.notificationMessage);
         notifText.onChanged().subscribe(v -> rule.notificationMessage = v);
         notifText.margins(Insets.bottom(4));
-        notifText.sizing(Sizing.fill(100),
-                rule.notificationType == NotificationType.TEXT ? Sizing.content() : Sizing.fixed(0));
 
-        body.child(buildNotificationButtons(notifText));
-        body.child(notifText);
+        body.child(buildNotificationButtons(notifText, body));
 
-        // ── Delete button, right-aligned, red ────────────────────────────────
+        if (rule.notificationType == NotificationType.TEXT) {
+            body.child(notifText);
+        }
+
         ButtonComponent removeBtn = UIComponents.button(Component.literal("Delete Rule"), btn -> {
             config.rules.remove(rule);
             moduleList.removeChild(card);
@@ -131,7 +124,7 @@ public class RuleModuleUi {
         return body;
     }
 
-    private FlowLayout buildNotificationButtons(TextBoxComponent notifText) {
+    private FlowLayout buildNotificationButtons(TextBoxComponent notifText, FlowLayout body) {
         FlowLayout row = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
         row.gap(4);
 
@@ -147,8 +140,14 @@ public class RuleModuleUi {
                 for (int j = 0; j < btns.length; j++) {
                     btns[j].renderer(j == idx ? NOTIF_ON : NOTIF_OFF);
                 }
-                notifText.sizing(Sizing.fill(100),
-                        type == NotificationType.TEXT ? Sizing.content() : Sizing.fixed(0));
+                if (type == NotificationType.TEXT) {
+                    if (!body.children().contains(notifText)) {
+                        int rowIndex = body.children().indexOf(row);
+                        body.child(rowIndex + 1, notifText);
+                    }
+                } else {
+                    body.removeChild(notifText);
+                }
             });
             btns[i].renderer(isCurrent ? NOTIF_ON : NOTIF_OFF);
             row.child(btns[i]);

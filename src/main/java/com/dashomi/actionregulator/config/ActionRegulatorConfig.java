@@ -3,7 +3,6 @@ package com.dashomi.actionregulator.config;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class ActionRegulatorConfig {
     private static ActionRegulatorConfig INSTANCE;
 

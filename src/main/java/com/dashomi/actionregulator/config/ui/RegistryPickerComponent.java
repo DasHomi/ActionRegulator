@@ -29,18 +29,17 @@ public class RegistryPickerComponent {
         container.padding(Insets.of(4));
         container.gap(3);
 
-        chips = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        chips = UIContainers.ltrTextFlow(Sizing.fill(100), Sizing.content());
         chips.gap(3);
         refreshChips();
 
         TextBoxComponent search = UIComponents.textBox(Sizing.fill(100));
         search.setMaxLength(64);
 
-        // suggestions box – hidden by default (no surface, zero height until populated)
         FlowLayout suggestions = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         suggestions.surface(Surface.flat(0xDD101010));
         suggestions.padding(Insets.of(2));
-        suggestions.sizing(Sizing.fill(100), Sizing.fixed(0)); // hidden until results appear
+        suggestions.sizing(Sizing.fill(100), Sizing.fixed(0));
 
         search.onChanged().subscribe(query -> {
             suggestions.clearChildren();
@@ -93,7 +92,7 @@ public class RegistryPickerComponent {
                         selected.remove(entry);
                         refreshChips();
                     });
-            chip.margins(Insets.right(2));
+            chip.margins(Insets.of(0, 3, 3, 0));
             chips.child(chip);
         }
     }

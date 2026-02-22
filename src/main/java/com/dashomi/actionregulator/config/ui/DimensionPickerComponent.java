@@ -17,10 +17,9 @@ public class DimensionPickerComponent {
     };
     private static final String[] LABELS = { "Overworld", "Nether", "End" };
 
-    // active (selected) = bright accent blue
     private static final ButtonComponent.Renderer RENDERER_ON  =
             ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
-    // inactive (not selected) = grey
+
     private static final ButtonComponent.Renderer RENDERER_OFF =
             ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
