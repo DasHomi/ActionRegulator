@@ -11,6 +11,7 @@ public class RuleModule {
     public TriggerType triggerType = TriggerType.ON_BLOCK_BREAK;
     public List<String> targetBlocks = new ArrayList<>();
     public List<String> handItems = new ArrayList<>();
+    public List<String> targetEntities = new ArrayList<>();
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
     public String notificationMessage = "";
     public NotificationType notificationType = NotificationType.OFF;

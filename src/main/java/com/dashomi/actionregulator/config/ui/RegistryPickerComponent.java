@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistryPickerComponent {
-
     private final List<String> selected;
     private final List<String> allEntries;
     private FlowLayout chips;
