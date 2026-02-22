@@ -21,7 +21,7 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
 
     public ConfigScreen(Screen parent) {
         this.parent = parent;
-        this.config = ActionRegulatorConfig.getOrCreate();
+        this.config = ActionRegulatorConfig.get();
     }
 
     @Override
@@ -70,5 +70,6 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
     @Override
     public void onClose() {
         this.minecraft.setScreen(parent);
+        config.save();
     }
 }

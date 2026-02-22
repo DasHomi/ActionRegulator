@@ -11,10 +11,19 @@ public class ActionRegulatorConfig {
 
     public ActionRegulatorConfig() {}
 
-    public static ActionRegulatorConfig getOrCreate() {
+    public static ActionRegulatorConfig get() {
         if (INSTANCE == null) {
-            INSTANCE = new ActionRegulatorConfig();
+            INSTANCE = ConfigManager.load();
         }
         return INSTANCE;
+    }
+
+    public static ActionRegulatorConfig reload() {
+        INSTANCE = ConfigManager.load();
+        return INSTANCE;
+    }
+
+    public void save() {
+        ConfigManager.save(this);
     }
 }
