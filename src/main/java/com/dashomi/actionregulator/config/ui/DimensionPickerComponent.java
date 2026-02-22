@@ -17,6 +17,13 @@ public class DimensionPickerComponent {
     };
     private static final String[] LABELS = { "Overworld", "Nether", "End" };
 
+    // active (selected) = bright accent blue
+    private static final ButtonComponent.Renderer RENDERER_ON  =
+            ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
+    // inactive (not selected) = grey
+    private static final ButtonComponent.Renderer RENDERER_OFF =
+            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
+
     private final List<String> activeDimensions;
 
     public DimensionPickerComponent(List<String> activeDimensions) {
@@ -30,24 +37,26 @@ public class DimensionPickerComponent {
         for (int i = 0; i < KEYS.length; i++) {
             final String key   = KEYS[i];
             final String label = LABELS[i];
-            boolean isActive   = activeDimensions.contains(key);
+            boolean initiallySelected = activeDimensions.contains(key);
+
+            final ButtonComponent[] ref = new ButtonComponent[1];
 
             ButtonComponent btn = UIComponents.button(Component.literal(label), b -> {
                 boolean nowSelected = activeDimensions.contains(key);
                 if (nowSelected) {
                     activeDimensions.remove(key);
-                    b.active(true);
+                    ref[0].renderer(RENDERER_OFF);
                 } else {
                     activeDimensions.add(key);
-                    b.active(false);
+                    ref[0].renderer(RENDERER_ON);
                 }
             });
 
-            btn.active(!isActive);
+            btn.renderer(initiallySelected ? RENDERER_ON : RENDERER_OFF);
+            ref[0] = btn;
             row.child(btn);
         }
 
         return row;
     }
 }
-

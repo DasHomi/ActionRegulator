@@ -58,7 +58,7 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
         }
 
         ScrollContainer<FlowLayout> scroll = UIContainers.verticalScroll(
-                Sizing.fill(100), Sizing.fill(85), moduleList);
+                Sizing.fill(100), Sizing.expand(), moduleList);
         root.child(scroll);
 
         ButtonComponent doneBtn = UIComponents.button(

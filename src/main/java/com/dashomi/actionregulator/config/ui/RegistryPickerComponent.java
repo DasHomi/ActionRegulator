@@ -25,9 +25,9 @@ public class RegistryPickerComponent {
 
     public FlowLayout build() {
         FlowLayout container = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
-        container.surface(Surface.flat(0x22000000));
+        container.surface(Surface.flat(0x33000000));
         container.padding(Insets.of(4));
-        container.gap(2);
+        container.gap(3);
 
         chips = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         chips.gap(3);
@@ -35,33 +35,47 @@ public class RegistryPickerComponent {
 
         TextBoxComponent search = UIComponents.textBox(Sizing.fill(100));
         search.setMaxLength(64);
-        search.margins(Insets.vertical(2));
 
+        // suggestions box – hidden by default (no surface, zero height until populated)
         FlowLayout suggestions = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
-        suggestions.surface(Surface.flat(0xCC101010));
+        suggestions.surface(Surface.flat(0xDD101010));
+        suggestions.padding(Insets.of(2));
+        suggestions.sizing(Sizing.fill(100), Sizing.fixed(0)); // hidden until results appear
 
         search.onChanged().subscribe(query -> {
             suggestions.clearChildren();
-            if (query.isBlank()) return;
+            if (query.isBlank()) {
+                suggestions.sizing(Sizing.fill(100), Sizing.fixed(0));
+                return;
+            }
             String q = query.toLowerCase();
-            allEntries.stream()
+            List<String> matches = allEntries.stream()
                     .filter(e -> e.contains(q))
-                    .limit(8)
-                    .forEach(entry -> {
-                        ButtonComponent btn = UIComponents.button(
-                                Component.literal(shortName(entry)),
-                                b -> {
-                                    if (!selected.contains(entry)) {
-                                        selected.add(entry);
-                                        refreshChips();
-                                    }
-                                    search.text("");
-                                    suggestions.clearChildren();
-                                });
-                        btn.sizing(Sizing.fill(100), Sizing.content());
-                        btn.margins(Insets.bottom(1));
-                        suggestions.child(btn);
-                    });
+                    .limit(6)
+                    .toList();
+
+            if (matches.isEmpty()) {
+                suggestions.sizing(Sizing.fill(100), Sizing.fixed(0));
+                return;
+            }
+
+            matches.forEach(entry -> {
+                ButtonComponent btn = UIComponents.button(
+                        Component.literal(shortName(entry)),
+                        b -> {
+                            if (!selected.contains(entry)) {
+                                selected.add(entry);
+                                refreshChips();
+                            }
+                            search.text("");
+                            suggestions.clearChildren();
+                            suggestions.sizing(Sizing.fill(100), Sizing.fixed(0));
+                        });
+                btn.sizing(Sizing.fill(100), Sizing.fixed(16));
+                btn.margins(Insets.bottom(1));
+                suggestions.child(btn);
+            });
+            suggestions.sizing(Sizing.fill(100), Sizing.content());
         });
 
         container.child(chips);
@@ -88,4 +102,3 @@ public class RegistryPickerComponent {
         return id.startsWith("minecraft:") ? id.substring(10) : id;
     }
 }
-
