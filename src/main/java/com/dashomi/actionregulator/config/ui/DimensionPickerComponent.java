@@ -9,12 +9,12 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class DimensionPickerComponent {
-
     private static final String[] KEYS   = {
             "minecraft:overworld",
             "minecraft:the_nether",
             "minecraft:the_end"
     };
+
     private static final String[] LABELS = { "Overworld", "Nether", "End" };
 
     private static final ButtonComponent.Renderer RENDERER_ON  =

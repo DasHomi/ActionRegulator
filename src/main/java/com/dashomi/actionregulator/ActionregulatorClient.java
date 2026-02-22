@@ -1,9 +1,11 @@
 package com.dashomi.actionregulator;
 
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
+import com.dashomi.actionregulator.listeners.AttackBlockEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -16,5 +18,7 @@ public class ActionregulatorClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ActionRegulatorConfig.get();
+
+        AttackBlockCallback.EVENT.register(AttackBlockEvent::attackBlockListener);
     }
 }

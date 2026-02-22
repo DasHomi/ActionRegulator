@@ -3,7 +3,6 @@ package com.dashomi.actionregulator.config.migrations;
 import com.google.gson.JsonObject;
 
 public class Migration_0_0_0_to_0_1_0 implements ConfigMigration {
-
     @Override
     public String getFromVersion() {
         return "0.0.0";
