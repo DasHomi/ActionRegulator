@@ -8,6 +8,7 @@ import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +16,13 @@ import java.util.List;
 public class RegistryPickerComponent {
     private final List<String> selected;
     private final List<String> allEntries;
+    private final String registryType;
     private FlowLayout chips;
 
-    public RegistryPickerComponent(List<String> selected, List<String> allEntries) {
+    public RegistryPickerComponent(List<String> selected, List<String> allEntries, String registryType) {
         this.selected = selected;
         this.allEntries = allEntries;
+        this.registryType = registryType;
     }
 
     public FlowLayout build() {
@@ -48,7 +51,10 @@ public class RegistryPickerComponent {
             }
             String q = query.toLowerCase();
             List<String> matches = allEntries.stream()
-                    .filter(e -> e.contains(q))
+                    .filter(e -> {
+                        String translatedName = resolvedComponent(e).getString().toLowerCase();
+                        return e.contains(q) || translatedName.contains(q);
+                    })
                     .limit(6)
                     .toList();
 
@@ -59,7 +65,7 @@ public class RegistryPickerComponent {
 
             matches.forEach(entry -> {
                 ButtonComponent btn = UIComponents.button(
-                        Component.literal(shortName(entry)),
+                        resolvedComponent(entry),
                         b -> {
                             if (!selected.contains(entry)) {
                                 selected.add(entry);
@@ -86,7 +92,7 @@ public class RegistryPickerComponent {
         chips.clearChildren();
         for (String entry : new ArrayList<>(selected)) {
             ButtonComponent chip = UIComponents.button(
-                    Component.literal(shortName(entry) + " ✕"),
+                    resolvedComponent(entry).copy().append(Component.literal(" ✕")),
                     b -> {
                         selected.remove(entry);
                         refreshChips();
@@ -96,7 +102,24 @@ public class RegistryPickerComponent {
         }
     }
 
-    private static String shortName(String id) {
-        return id.startsWith("minecraft:") ? id.substring(10) : id;
+    private String translationKey(String id) {
+        String key = registryType + "." + id.replace(":", ".");
+        if (registryType.equals("item") && !Language.getInstance().has(key)) {
+            String blockKey = "block." + id.replace(":", ".");
+            if (Language.getInstance().has(blockKey)) {
+                return blockKey;
+            }
+        }
+        return key;
+    }
+
+    private Component resolvedComponent(String id) {
+        String key = translationKey(id);
+        if (Language.getInstance().has(key)) {
+            return Component.translatable(key);
+        }
+
+        String shortName = id.contains(":") ? id.substring(id.indexOf(':') + 1) : id;
+        return Component.literal(shortName);
     }
 }

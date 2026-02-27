@@ -38,7 +38,7 @@ public class DimensionPickerComponent {
         row.gap(4);
 
         for (int i = 0; i < KEYS.length; i++) {
-            final String key   = KEYS[i];
+            final String key = KEYS[i];
             final String label = LABELS[i];
             boolean initiallySelected = activeDimensions.contains(key);
 

@@ -180,23 +180,23 @@ public class RuleModuleUi {
         switch (rule.triggerType) {
             case ON_BLOCK_BREAK, ON_BLOCK_PLACE -> {
                 pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS).build());
+                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
                 pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
+                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
             }
             case ON_USE_ITEM -> {
                 pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
+                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
                 pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS).build());
+                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
                 pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES).build());
+                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
             }
             case ON_ATTACK_ENTITY -> {
                 pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
+                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
                 pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES).build());
+                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
             }
         }
     }
@@ -232,7 +232,6 @@ public class RuleModuleUi {
 
         return row;
     }
-
 
     private LabelComponent sectionLabel(String key, int color) {
         return UIComponents.label(Component.translatable(key))
