@@ -36,13 +36,13 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
         root.gap(8);
         root.horizontalAlignment(HorizontalAlignment.CENTER);
 
-        LabelComponent title = UIComponents.label(Component.literal("Action Regulator"));
+        LabelComponent title = UIComponents.label(Component.translatable("actionregulator.ui.title"));
         title.color(Color.ofArgb(0xFFFFFFFF));
         title.margins(Insets.bottom(6));
         root.child(title);
 
         ButtonComponent addBtn = UIComponents.button(
-                Component.literal("+ Add Module"), btn -> {
+                Component.translatable("actionregulator.ui.buttons.addModule"), btn -> {
                     RuleModule newRule = new RuleModule();
                     config.rules.add(newRule);
                     moduleList.child(new RuleModuleUi(newRule).build(config, moduleList));
@@ -62,7 +62,7 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
         root.child(scroll);
 
         ButtonComponent doneBtn = UIComponents.button(
-                Component.literal("Done"), btn -> onClose());
+                Component.translatable("actionregulator.ui.buttons.done"), btn -> onClose());
         doneBtn.margins(Insets.top(6));
         root.child(doneBtn);
     }

@@ -1,3 +1,32 @@
 {
+  "actionregulator.ui.title": "Action Regulator",
+  "actionregulator.ui.buttons.addModule": "+ Add Module",
+  "actionregulator.ui.buttons.done": "Done",
 
+  "actionregulator.ui.module.collapse": "▼",
+  "actionregulator.ui.module.expand": "▶",
+  "actionregulator.ui.module.enabled": "ON",
+  "actionregulator.ui.module.disabled": "OFF",
+  "actionregulator.ui.module.deleteRule": "Delete Rule",
+
+  "actionregulator.ui.section.trigger": "Trigger",
+  "actionregulator.ui.section.dimensions": "Dimensions",
+  "actionregulator.ui.section.notification": "Notification",
+  "actionregulator.ui.section.targetBlocks": "Target Blocks",
+  "actionregulator.ui.section.handItems": "Hand Items",
+  "actionregulator.ui.section.targetEntities": "Target Entities",
+
+  "actionregulator.ui.trigger.useItem": "Use Item",
+  "actionregulator.ui.trigger.attackEntity": "Attack Entity",
+  "actionregulator.ui.trigger.blockBreak": "Block Break",
+  "actionregulator.ui.trigger.blockPlace": "Block Place",
+
+  "actionregulator.ui.notification.off": "Off",
+  "actionregulator.ui.notification.sound": "Sound",
+  "actionregulator.ui.notification.symbol": "Symbol",
+  "actionregulator.ui.notification.text": "Text",
+
+  "actionregulator.ui.dimension.overworld": "Overworld",
+  "actionregulator.ui.dimension.nether": "Nether",
+  "actionregulator.ui.dimension.end": "End"
 }

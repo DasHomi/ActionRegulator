@@ -15,7 +15,11 @@ public class DimensionPickerComponent {
             "minecraft:the_end"
     };
 
-    private static final String[] LABELS = { "Overworld", "Nether", "End" };
+    private static final String[] LABELS = {
+            "actionregulator.ui.dimension.overworld",
+            "actionregulator.ui.dimension.nether",
+            "actionregulator.ui.dimension.end"
+    };
 
     private static final ButtonComponent.Renderer RENDERER_ON  =
             ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
@@ -40,7 +44,7 @@ public class DimensionPickerComponent {
 
             final ButtonComponent[] ref = new ButtonComponent[1];
 
-            ButtonComponent btn = UIComponents.button(Component.literal(label), b -> {
+            ButtonComponent btn = UIComponents.button(Component.translatable(label), b -> {
                 boolean nowSelected = activeDimensions.contains(key);
                 if (nowSelected) {
                     activeDimensions.remove(key);

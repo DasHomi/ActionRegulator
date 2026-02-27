@@ -21,9 +21,19 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class RuleModuleUi {
-    private static final String[] NOTIF_LABELS = {"Off", "Sound", "Symbol", "Text"};
+    private static final String[] NOTIF_LABELS = {
+            "actionregulator.ui.notification.off",
+            "actionregulator.ui.notification.sound",
+            "actionregulator.ui.notification.symbol",
+            "actionregulator.ui.notification.text"
+    };
 
-    private static final String[] TRIGGER_LABELS = {"Use Item", "Attack Entity", "Block Break", "Block Place"};
+    private static final String[] TRIGGER_LABELS = {
+            "actionregulator.ui.trigger.useItem",
+            "actionregulator.ui.trigger.attackEntity",
+            "actionregulator.ui.trigger.blockBreak",
+            "actionregulator.ui.trigger.blockPlace"
+    };
 
     private static final List<String> ALL_BLOCKS = BuiltInRegistries.BLOCK.keySet()
             .stream().map(Object::toString).sorted().toList();
@@ -61,9 +71,9 @@ public class RuleModuleUi {
         boolean[] collapsed = {false};
         FlowLayout body = buildBody(config, moduleList, card);
 
-        ButtonComponent collapseBtn = UIComponents.button(Component.literal("▼"), b -> {
+        ButtonComponent collapseBtn = UIComponents.button(Component.translatable("actionregulator.ui.module.collapse"), b -> {
             collapsed[0] = !collapsed[0];
-            b.setMessage(Component.literal(collapsed[0] ? "▶" : "▼"));
+            b.setMessage(Component.translatable(collapsed[0] ? "actionregulator.ui.module.expand" : "actionregulator.ui.module.collapse"));
             body.sizing(Sizing.fill(100), collapsed[0] ? Sizing.fixed(0) : Sizing.content());
         });
         collapseBtn.sizing(Sizing.fixed(20), Sizing.fixed(16));
@@ -73,9 +83,9 @@ public class RuleModuleUi {
         nameBox.onChanged().subscribe(v -> rule.name = v);
 
         ButtonComponent enableBtn = UIComponents.button(
-                Component.literal(rule.enabled ? "ON" : "OFF"), b -> {
+                Component.translatable(rule.enabled ? "actionregulator.ui.module.enabled" : "actionregulator.ui.module.disabled"), b -> {
                     rule.enabled = !rule.enabled;
-                    b.setMessage(Component.literal(rule.enabled ? "ON" : "OFF"));
+                    b.setMessage(Component.translatable(rule.enabled ? "actionregulator.ui.module.enabled" : "actionregulator.ui.module.disabled"));
                     card.surface(rule.enabled ? Surface.PANEL : DISABLED_SURFACE);
                 });
         enableBtn.sizing(Sizing.fixed(32), Sizing.fixed(16));
@@ -97,13 +107,13 @@ public class RuleModuleUi {
         FlowLayout body = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         body.gap(4);
 
-        body.child(sectionLabel("Trigger", 0xFF4EA8DE));
+        body.child(sectionLabel("actionregulator.ui.section.trigger", 0xFF4EA8DE));
         body.child(buildTriggerButtons());
 
-        body.child(sectionLabel("Dimensions", 0xFF4EA8DE).margins(Insets.top(4)));
+        body.child(sectionLabel("actionregulator.ui.section.dimensions", 0xFF4EA8DE).margins(Insets.top(4)));
         body.child(new DimensionPickerComponent(rule.activeDimensions).build());
 
-        body.child(sectionLabel("Notification", 0xFF4EA8DE).margins(Insets.top(4)));
+        body.child(sectionLabel("actionregulator.ui.section.notification", 0xFF4EA8DE).margins(Insets.top(4)));
 
         TextBoxComponent notifText = UIComponents.textBox(Sizing.fill(100), rule.notificationMessage);
         notifText.onChanged().subscribe(v -> rule.notificationMessage = v);
@@ -115,7 +125,7 @@ public class RuleModuleUi {
             body.child(notifText);
         }
 
-        ButtonComponent removeBtn = UIComponents.button(Component.literal("Delete Rule"), btn -> {
+        ButtonComponent removeBtn = UIComponents.button(Component.translatable("actionregulator.ui.module.deleteRule"), btn -> {
             config.rules.remove(rule);
             moduleList.removeChild(card);
         });
@@ -145,7 +155,7 @@ public class RuleModuleUi {
             final int idx = i;
             final TriggerType type = types[i];
             boolean isCurrent = rule.triggerType == type;
-            btns[i] = UIComponents.button(Component.literal(TRIGGER_LABELS[i]), b -> {
+            btns[i] = UIComponents.button(Component.translatable(TRIGGER_LABELS[i]), b -> {
                 rule.triggerType = type;
                 for (int j = 0; j < btns.length; j++) {
                     btns[j].renderer(j == idx ? TRIGGER_ON : TRIGGER_OFF);
@@ -169,23 +179,23 @@ public class RuleModuleUi {
 
         switch (rule.triggerType) {
             case ON_BLOCK_BREAK, ON_BLOCK_PLACE -> {
-                pickerArea.child(sectionLabel("Target Blocks", 0xFF1E648D));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D));
                 pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS).build());
-                pickerArea.child(sectionLabel("Hand Items", 0xFF1E648D).margins(Insets.top(4)));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D).margins(Insets.top(4)));
                 pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
             }
             case ON_USE_ITEM -> {
-                pickerArea.child(sectionLabel("Hand Items", 0xFF1E648D));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
                 pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
-                pickerArea.child(sectionLabel("Target Blocks", 0xFF1E648D).margins(Insets.top(4)));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D).margins(Insets.top(4)));
                 pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS).build());
-                pickerArea.child(sectionLabel("Target Entities", 0xFF1E648D).margins(Insets.top(4)));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
                 pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES).build());
             }
             case ON_ATTACK_ENTITY -> {
-                pickerArea.child(sectionLabel("Hand Items", 0xFF1E648D));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
                 pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS).build());
-                pickerArea.child(sectionLabel("Target Entities", 0xFF1E648D).margins(Insets.top(4)));
+                pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
                 pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES).build());
             }
         }
@@ -202,7 +212,7 @@ public class RuleModuleUi {
             final int idx = i;
             final NotificationType type = types[i];
             boolean isCurrent = rule.notificationType == type;
-            btns[i] = UIComponents.button(Component.literal(NOTIF_LABELS[i]), b -> {
+            btns[i] = UIComponents.button(Component.translatable(NOTIF_LABELS[i]), b -> {
                 rule.notificationType = type;
                 for (int j = 0; j < btns.length; j++) {
                     btns[j].renderer(j == idx ? NOTIF_ON : NOTIF_OFF);
@@ -224,8 +234,8 @@ public class RuleModuleUi {
     }
 
 
-    private LabelComponent sectionLabel(String text, int color) {
-        return UIComponents.label(Component.literal(text))
+    private LabelComponent sectionLabel(String key, int color) {
+        return UIComponents.label(Component.translatable(key))
                 .color(Color.ofArgb(color));
     }
 }
