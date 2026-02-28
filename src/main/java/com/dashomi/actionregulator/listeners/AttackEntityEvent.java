@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.listeners;
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.TriggerType;
+import com.dashomi.actionregulator.utils.FilterUtils;
 import com.dashomi.actionregulator.utils.RegistryStringCreator;
 import com.dashomi.actionregulator.utils.RuleAppliedNotification;
 import net.minecraft.world.InteractionHand;
@@ -25,9 +26,9 @@ public class AttackEntityEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (!rule.handItems.isEmpty() && !rule.handItems.contains(heldItemId)) continue;
+                if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
 
-                if (!rule.targetEntities.isEmpty() && !rule.targetEntities.contains(targetEntityId)) continue;
+                if (!FilterUtils.matchesFilter(rule.targetEntities, rule.invertTargetEntities, targetEntityId)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

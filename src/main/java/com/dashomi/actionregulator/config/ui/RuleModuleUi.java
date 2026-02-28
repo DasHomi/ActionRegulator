@@ -53,6 +53,11 @@ public class RuleModuleUi {
     private static final ButtonComponent.Renderer TRIGGER_OFF =
             ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
+    private static final ButtonComponent.Renderer INVERT_ON =
+            ButtonComponent.Renderer.flat(0xFF226622, 0xFF338833, 0xFF114411);
+    private static final ButtonComponent.Renderer INVERT_OFF =
+            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
+
     private final RuleModule rule;
 
     public RuleModuleUi(RuleModule rule) {
@@ -175,12 +180,44 @@ public class RuleModuleUi {
     private void rebuildPickerArea(FlowLayout pickerArea) {
         pickerArea.clearChildren();
 
-        pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
+        pickerArea.child(registrySectionHeader("actionregulator.ui.section.handItems", 0,
+                () -> rule.invertHandItems, v -> rule.invertHandItems = v));
         pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
-        pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D).margins(Insets.top(4)));
+
+        pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetBlocks", 4,
+                () -> rule.invertTargetBlocks, v -> rule.invertTargetBlocks = v));
         pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
-        pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
+
+        pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetEntities", 4,
+                () -> rule.invertTargetEntities, v -> rule.invertTargetEntities = v));
         pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
+    }
+
+    private FlowLayout registrySectionHeader(String labelKey, int topMargin,
+            java.util.function.BooleanSupplier getter, java.util.function.Consumer<Boolean> setter) {
+        FlowLayout row = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        row.verticalAlignment(VerticalAlignment.CENTER);
+        row.gap(4);
+        if (topMargin > 0) row.margins(Insets.top(topMargin));
+
+        LabelComponent label = sectionLabel(labelKey, 0xFF1E648D);
+        label.sizing(Sizing.expand(), Sizing.content());
+
+        boolean[] state = {getter.getAsBoolean()};
+        ButtonComponent invertBtn = UIComponents.button(
+                Component.translatable(state[0] ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off"),
+                b -> {
+                    state[0] = !state[0];
+                    setter.accept(state[0]);
+                    b.setMessage(Component.translatable(state[0] ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off"));
+                    b.renderer(state[0] ? INVERT_ON : INVERT_OFF);
+                });
+        invertBtn.sizing(Sizing.fixed(68), Sizing.fixed(14));
+        invertBtn.renderer(state[0] ? INVERT_ON : INVERT_OFF);
+
+        row.child(label);
+        row.child(invertBtn);
+        return row;
     }
 
     private FlowLayout buildNotificationButtons(TextBoxComponent notifText, FlowLayout body) {

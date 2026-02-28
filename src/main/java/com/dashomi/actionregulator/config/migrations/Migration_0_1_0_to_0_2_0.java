@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.config.migrations;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 public class Migration_0_1_0_to_0_2_0 implements ConfigMigration {
 
@@ -24,6 +25,9 @@ public class Migration_0_1_0_to_0_2_0 implements ConfigMigration {
                     JsonObject rule = element.getAsJsonObject();
                     if (!rule.has("targetEntities")) {
                         rule.add("targetEntities", new JsonArray());
+                        rule.add("invertTargetBlocks", new JsonPrimitive(false));
+                        rule.add("invertHandItems", new JsonPrimitive(false));
+                        rule.add("invertTargetEntities", new JsonPrimitive(false));
                     }
                 }
             }

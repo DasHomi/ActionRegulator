@@ -10,8 +10,11 @@ public class RuleModule {
     public boolean enabled = true;
     public TriggerType triggerType = TriggerType.ON_ATTACK;
     public List<String> targetBlocks = new ArrayList<>();
+    public boolean invertTargetBlocks = false;
     public List<String> handItems = new ArrayList<>();
+    public boolean invertHandItems = false;
     public List<String> targetEntities = new ArrayList<>();
+    public boolean invertTargetEntities = false;
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
     public String notificationMessage = "";
     public NotificationType notificationType = NotificationType.OFF;

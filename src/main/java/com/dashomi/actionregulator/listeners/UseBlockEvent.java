@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.listeners;
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.TriggerType;
+import com.dashomi.actionregulator.utils.FilterUtils;
 import com.dashomi.actionregulator.utils.RegistryStringCreator;
 import com.dashomi.actionregulator.utils.RuleAppliedNotification;
 import net.minecraft.world.InteractionHand;
@@ -23,9 +24,9 @@ public class UseBlockEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (!rule.handItems.isEmpty() && !rule.handItems.contains(heldItemId)) continue;
+                if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
 
-                if (!rule.targetBlocks.isEmpty() && !rule.targetBlocks.contains(targetBlockId)) continue;
+                if (!FilterUtils.matchesFilter(rule.targetBlocks, rule.invertTargetBlocks, targetBlockId)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

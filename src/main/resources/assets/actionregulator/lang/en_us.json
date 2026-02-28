@@ -18,6 +18,9 @@
   "actionregulator.ui.section.handItems": "Hand Items",
   "actionregulator.ui.section.targetEntities": "Target Entities",
 
+  "actionregulator.ui.registryinvert.on": "Invert: ON",
+  "actionregulator.ui.registryinvert.off": "Invert: OFF",
+
   "actionregulator.ui.trigger.use": "Use (Right Click)",
   "actionregulator.ui.trigger.attack": "Attack (Left Click)",
 
