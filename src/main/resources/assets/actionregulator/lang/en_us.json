@@ -1,5 +1,7 @@
 {
   "actionregulator.ui.title": "Action Regulator",
+  "modmenu.descriptionTranslation.actionregulator": "Regulates actions.",
+
   "actionregulator.ui.buttons.addModule": "+ Add Module",
   "actionregulator.ui.buttons.done": "Done",
 
@@ -16,10 +18,8 @@
   "actionregulator.ui.section.handItems": "Hand Items",
   "actionregulator.ui.section.targetEntities": "Target Entities",
 
-  "actionregulator.ui.trigger.useItem": "Use Item",
-  "actionregulator.ui.trigger.attackEntity": "Attack Entity",
-  "actionregulator.ui.trigger.blockBreak": "Block Break",
-  "actionregulator.ui.trigger.blockPlace": "Block Place",
+  "actionregulator.ui.trigger.use": "Use (Right Click)",
+  "actionregulator.ui.trigger.attack": "Attack (Left Click)",
 
   "actionregulator.ui.notification.off": "Off",
   "actionregulator.ui.notification.sound": "Sound",

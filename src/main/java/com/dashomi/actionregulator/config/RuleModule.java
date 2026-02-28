@@ -8,7 +8,7 @@ import java.util.List;
 public class RuleModule {
     public String name = "New Module";
     public boolean enabled = true;
-    public TriggerType triggerType = TriggerType.ON_BLOCK_BREAK;
+    public TriggerType triggerType = TriggerType.ON_ATTACK;
     public List<String> targetBlocks = new ArrayList<>();
     public List<String> handItems = new ArrayList<>();
     public List<String> targetEntities = new ArrayList<>();

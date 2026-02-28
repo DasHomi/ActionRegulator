@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "actionregulator",
   "version": "${version}",
-  "name": "ActionRegulator",
+  "name": "Action Regulator",
   "description": "Regulates actions",
   "authors": ["DasHomi"],
   "contact": {
@@ -30,5 +30,12 @@
   },
   "suggests": {
     "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.modrinth": "https://modrinth.com/mod/actionregulator"
+      }
+    }
   }
 }

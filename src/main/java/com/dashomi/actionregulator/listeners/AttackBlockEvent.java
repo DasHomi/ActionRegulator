@@ -20,7 +20,7 @@ public class AttackBlockEvent {
             String targetBlockId = RegistryStringCreator.getBlockId(world, blockPos);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
-                if (!rule.enabled || rule.triggerType != TriggerType.ON_BLOCK_BREAK) continue;
+                if (!rule.enabled || rule.triggerType != TriggerType.ON_ATTACK) continue;
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 

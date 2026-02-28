@@ -28,11 +28,9 @@ public class RuleModuleUi {
             "actionregulator.ui.notification.text"
     };
 
-    private static final String[] TRIGGER_LABELS = {
-            "actionregulator.ui.trigger.useItem",
-            "actionregulator.ui.trigger.attackEntity",
-            "actionregulator.ui.trigger.blockBreak",
-            "actionregulator.ui.trigger.blockPlace"
+    private static final String[] TRIGGER_LABELS = new String[]{
+            "actionregulator.ui.trigger.attack",
+            "actionregulator.ui.trigger.use"
     };
 
     private static final List<String> ALL_BLOCKS = BuiltInRegistries.BLOCK.keySet()
@@ -177,28 +175,12 @@ public class RuleModuleUi {
     private void rebuildPickerArea(FlowLayout pickerArea) {
         pickerArea.clearChildren();
 
-        switch (rule.triggerType) {
-            case ON_BLOCK_BREAK, ON_BLOCK_PLACE -> {
-                pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
-                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
-            }
-            case ON_USE_ITEM -> {
-                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
-                pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
-                pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
-            }
-            case ON_ATTACK_ENTITY -> {
-                pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
-                pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
-                pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
-                pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
-            }
-        }
+        pickerArea.child(sectionLabel("actionregulator.ui.section.handItems", 0xFF1E648D));
+        pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
+        pickerArea.child(sectionLabel("actionregulator.ui.section.targetBlocks", 0xFF1E648D).margins(Insets.top(4)));
+        pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
+        pickerArea.child(sectionLabel("actionregulator.ui.section.targetEntities", 0xFF1E648D).margins(Insets.top(4)));
+        pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
     }
 
     private FlowLayout buildNotificationButtons(TextBoxComponent notifText, FlowLayout body) {

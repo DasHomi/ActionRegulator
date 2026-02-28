@@ -11,17 +11,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-public class AttackEntityEvent {
-    public static InteractionResult attackEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult result) {
+public class UseEntityEvent {
+    public static InteractionResult useEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         if (!player.isSpectator()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
             String heldItemId = RegistryStringCreator.getItemId(player, hand);
             String targetEntityId = RegistryStringCreator.getEntityId(entity);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
-                if (!rule.enabled || rule.triggerType != TriggerType.ON_ATTACK) continue;
+                if (!rule.enabled || rule.triggerType != TriggerType.ON_USE) continue;
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
@@ -34,6 +34,7 @@ public class AttackEntityEvent {
                 return InteractionResult.FAIL;
             }
         }
+
         return InteractionResult.PASS;
     }
 }
