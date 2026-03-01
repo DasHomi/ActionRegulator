@@ -36,10 +36,14 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
         root.gap(8);
         root.horizontalAlignment(HorizontalAlignment.CENTER);
 
+        FlowLayout header = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        header.verticalAlignment(VerticalAlignment.CENTER);
+        header.gap(4);
+        header.margins(Insets.bottom(2));
+
         LabelComponent title = UIComponents.label(Component.translatable("actionregulator.ui.title"));
         title.color(Color.ofArgb(0xFFFFFFFF));
-        title.margins(Insets.bottom(6));
-        root.child(title);
+        title.sizing(Sizing.expand(), Sizing.content());
 
         ButtonComponent addBtn = UIComponents.button(
                 Component.translatable("actionregulator.ui.buttons.addModule"), btn -> {
@@ -47,8 +51,10 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
                     config.rules.add(newRule);
                     moduleList.child(new RuleModuleUi(newRule).build(config, moduleList));
                 });
-        addBtn.margins(Insets.bottom(4));
-        root.child(addBtn);
+
+        header.child(title);
+        header.child(addBtn);
+        root.child(header);
 
         moduleList = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         moduleList.gap(4);
@@ -63,7 +69,8 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
 
         ButtonComponent doneBtn = UIComponents.button(
                 Component.translatable("actionregulator.ui.buttons.done"), btn -> onClose());
-        doneBtn.margins(Insets.top(6));
+        doneBtn.sizing(Sizing.fixed(200), Sizing.fixed(20));
+        doneBtn.margins(Insets.top(4));
         root.child(doneBtn);
     }
 

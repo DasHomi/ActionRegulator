@@ -2,6 +2,7 @@ package com.dashomi.actionregulator.listeners;
 
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.enums.TargetMode;
 import com.dashomi.actionregulator.enums.TriggerType;
 import com.dashomi.actionregulator.utils.FilterUtils;
 import com.dashomi.actionregulator.utils.RegistryStringCreator;
@@ -24,7 +25,10 @@ public class UseItemEvent {
 
                 if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
 
-                if (!rule.targetBlocks.isEmpty() || !rule.targetEntities.isEmpty()) continue;
+                boolean activeTargetSet = rule.targetMode == TargetMode.BLOCKS
+                        ? !rule.targetBlocks.isEmpty()
+                        : !rule.targetEntities.isEmpty();
+                if (activeTargetSet) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

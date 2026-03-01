@@ -14,9 +14,13 @@
   "actionregulator.ui.section.trigger": "Trigger",
   "actionregulator.ui.section.dimensions": "Dimensions",
   "actionregulator.ui.section.notification": "Notification",
+  "actionregulator.ui.section.target": "Target",
   "actionregulator.ui.section.targetBlocks": "Target Blocks",
   "actionregulator.ui.section.handItems": "Hand Items",
   "actionregulator.ui.section.targetEntities": "Target Entities",
+
+  "actionregulator.ui.targetmode.blocks": "Blocks",
+  "actionregulator.ui.targetmode.entities": "Entities",
 
   "actionregulator.ui.registryinvert.on": "Invert: ON",
   "actionregulator.ui.registryinvert.off": "Invert: OFF",

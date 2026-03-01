@@ -2,6 +2,7 @@ package com.dashomi.actionregulator.listeners;
 
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.enums.TargetMode;
 import com.dashomi.actionregulator.enums.TriggerType;
 import com.dashomi.actionregulator.utils.FilterUtils;
 import com.dashomi.actionregulator.utils.RegistryStringCreator;
@@ -23,6 +24,8 @@ public class UseEntityEvent {
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
                 if (!rule.enabled || rule.triggerType != TriggerType.ON_USE) continue;
+
+                if (rule.targetMode != TargetMode.ENTITIES) continue;
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 

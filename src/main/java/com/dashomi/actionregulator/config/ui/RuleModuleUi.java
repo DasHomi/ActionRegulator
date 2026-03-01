@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.config.ui;
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.NotificationType;
+import com.dashomi.actionregulator.enums.TargetMode;
 import com.dashomi.actionregulator.enums.TriggerType;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
@@ -40,8 +41,7 @@ public class RuleModuleUi {
     private static final List<String> ALL_ENTITIES = BuiltInRegistries.ENTITY_TYPE.keySet()
             .stream().map(Object::toString).sorted().toList();
 
-    private static final Surface DISABLED_SURFACE =
-            Surface.flat(0x55000000).and(Surface.PANEL);
+    private static final Surface DISABLED_SURFACE = Surface.PANEL;
 
     private static final ButtonComponent.Renderer NOTIF_ON  =
             ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
@@ -58,6 +58,16 @@ public class RuleModuleUi {
     private static final ButtonComponent.Renderer INVERT_OFF =
             ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
+    private static final ButtonComponent.Renderer ENABLED_BTN =
+            ButtonComponent.Renderer.flat(0xFF227722, 0xFF339933, 0xFF115511);
+    private static final ButtonComponent.Renderer DISABLED_BTN =
+            ButtonComponent.Renderer.flat(0xFF882222, 0xFFAA3333, 0xFF661111);
+
+    private static final ButtonComponent.Renderer TARGET_MODE_ON =
+            ButtonComponent.Renderer.flat(0xFF7A3A9A, 0xFF9B4DBF, 0xFF5A1A7A);
+    private static final ButtonComponent.Renderer TARGET_MODE_OFF =
+            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
+
     private final RuleModule rule;
 
     public RuleModuleUi(RuleModule rule) {
@@ -71,13 +81,15 @@ public class RuleModuleUi {
         card.padding(Insets.of(6, 6, 10, 6));
         card.margins(Insets.bottom(6));
 
-        boolean[] collapsed = {false};
         FlowLayout body = buildBody(config, moduleList, card);
 
-        ButtonComponent collapseBtn = UIComponents.button(Component.translatable("actionregulator.ui.module.collapse"), b -> {
-            collapsed[0] = !collapsed[0];
-            b.setMessage(Component.translatable(collapsed[0] ? "actionregulator.ui.module.expand" : "actionregulator.ui.module.collapse"));
-            body.sizing(Sizing.fill(100), collapsed[0] ? Sizing.fixed(0) : Sizing.content());
+        body.sizing(Sizing.fill(100), rule.expanded ? Sizing.content() : Sizing.fixed(0));
+
+        ButtonComponent collapseBtn = UIComponents.button(
+                Component.translatable(rule.expanded ? "actionregulator.ui.module.collapse" : "actionregulator.ui.module.expand"), b -> {
+            rule.expanded = !rule.expanded;
+            b.setMessage(Component.translatable(rule.expanded ? "actionregulator.ui.module.collapse" : "actionregulator.ui.module.expand"));
+            body.sizing(Sizing.fill(100), rule.expanded ? Sizing.content() : Sizing.fixed(0));
         });
         collapseBtn.sizing(Sizing.fixed(20), Sizing.fixed(16));
 
@@ -89,9 +101,11 @@ public class RuleModuleUi {
                 Component.translatable(rule.enabled ? "actionregulator.ui.module.enabled" : "actionregulator.ui.module.disabled"), b -> {
                     rule.enabled = !rule.enabled;
                     b.setMessage(Component.translatable(rule.enabled ? "actionregulator.ui.module.enabled" : "actionregulator.ui.module.disabled"));
+                    b.renderer(rule.enabled ? ENABLED_BTN : DISABLED_BTN);
                     card.surface(rule.enabled ? Surface.PANEL : DISABLED_SURFACE);
                 });
         enableBtn.sizing(Sizing.fixed(32), Sizing.fixed(16));
+        enableBtn.renderer(rule.enabled ? ENABLED_BTN : DISABLED_BTN);
 
         FlowLayout header = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         header.verticalAlignment(VerticalAlignment.CENTER);
@@ -184,13 +198,48 @@ public class RuleModuleUi {
                 () -> rule.invertHandItems, v -> rule.invertHandItems = v));
         pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
 
-        pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetBlocks", 4,
-                () -> rule.invertTargetBlocks, v -> rule.invertTargetBlocks = v));
-        pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
+        FlowLayout targetModeRow = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
+        targetModeRow.gap(4);
+        targetModeRow.margins(Insets.top(4));
 
-        pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetEntities", 4,
-                () -> rule.invertTargetEntities, v -> rule.invertTargetEntities = v));
-        pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
+        ButtonComponent[] modeBtns = new ButtonComponent[2];
+
+        modeBtns[0] = UIComponents.button(
+                Component.translatable("actionregulator.ui.targetmode.blocks"), b -> {
+                    if (rule.targetMode != TargetMode.BLOCKS) {
+                        rule.targetMode = TargetMode.BLOCKS;
+                        modeBtns[0].renderer(TARGET_MODE_ON);
+                        modeBtns[1].renderer(TARGET_MODE_OFF);
+                        rebuildPickerArea(pickerArea);
+                    }
+                });
+        modeBtns[0].renderer(rule.targetMode == TargetMode.BLOCKS ? TARGET_MODE_ON : TARGET_MODE_OFF);
+
+        modeBtns[1] = UIComponents.button(
+                Component.translatable("actionregulator.ui.targetmode.entities"), b -> {
+                    if (rule.targetMode != TargetMode.ENTITIES) {
+                        rule.targetMode = TargetMode.ENTITIES;
+                        modeBtns[0].renderer(TARGET_MODE_OFF);
+                        modeBtns[1].renderer(TARGET_MODE_ON);
+                        rebuildPickerArea(pickerArea);
+                    }
+                });
+        modeBtns[1].renderer(rule.targetMode == TargetMode.ENTITIES ? TARGET_MODE_ON : TARGET_MODE_OFF);
+
+        targetModeRow.child(modeBtns[0]);
+        targetModeRow.child(modeBtns[1]);
+        pickerArea.child(sectionLabel("actionregulator.ui.section.target", 0xFF4EA8DE).margins(Insets.top(4)));
+        pickerArea.child(targetModeRow);
+
+        if (rule.targetMode == TargetMode.BLOCKS) {
+            pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetBlocks", 4,
+                    () -> rule.invertTargetBlocks, v -> rule.invertTargetBlocks = v));
+            pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
+        } else {
+            pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetEntities", 4,
+                    () -> rule.invertTargetEntities, v -> rule.invertTargetEntities = v));
+            pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
+        }
     }
 
     private FlowLayout registrySectionHeader(String labelKey, int topMargin,
