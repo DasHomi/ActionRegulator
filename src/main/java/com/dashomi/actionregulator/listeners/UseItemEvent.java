@@ -7,9 +7,11 @@ import com.dashomi.actionregulator.enums.TriggerType;
 import com.dashomi.actionregulator.utils.FilterUtils;
 import com.dashomi.actionregulator.utils.RegistryStringCreator;
 import com.dashomi.actionregulator.utils.RuleAppliedNotification;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class UseItemEvent {
@@ -29,6 +31,9 @@ public class UseItemEvent {
                         ? !rule.targetBlocks.isEmpty()
                         : !rule.targetEntities.isEmpty();
                 if (activeTargetSet) continue;
+
+                ItemStack stack = player.getItemInHand(hand);
+                if (!stack.has(DataComponents.CONSUMABLE)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

@@ -104,22 +104,20 @@ public class RegistryPickerComponent {
 
     private String translationKey(String id) {
         String key = registryType + "." + id.replace(":", ".");
-        if (registryType.equals("item") && !Language.getInstance().has(key)) {
+        if (Language.getInstance().has(key)) {
+            return key;
+        }
+        if (registryType.equals("item") || registryType.equals("block")) {
             String blockKey = "block." + id.replace(":", ".");
-            if (Language.getInstance().has(blockKey)) {
-                return blockKey;
-            }
+            if (Language.getInstance().has(blockKey)) return blockKey;
+            String itemKey = "item." + id.replace(":", ".");
+            if (Language.getInstance().has(itemKey)) return itemKey;
         }
         return key;
     }
 
     private Component resolvedComponent(String id) {
         String key = translationKey(id);
-        if (Language.getInstance().has(key)) {
-            return Component.translatable(key);
-        }
-
-        String shortName = id.contains(":") ? id.substring(id.indexOf(':') + 1) : id;
-        return Component.literal(shortName);
+        return Component.translatable(key);
     }
 }
