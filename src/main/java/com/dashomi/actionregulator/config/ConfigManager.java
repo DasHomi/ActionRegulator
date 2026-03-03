@@ -21,6 +21,56 @@ public class ConfigManager {
     private static final String CONFIG_FILE_NAME = "actionregulator.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    public static Path exportRule(RuleModule rule) throws IOException {
+        Path exportsDir = FabricLoader.getInstance()
+                .getConfigDir()
+                .resolve("actionregulator")
+                .resolve("exports");
+        Files.createDirectories(exportsDir);
+
+        String safeName = rule.name
+                .replaceAll("[^a-zA-Z0-9_\\-]", "_")
+                .replaceAll("_+", "_");
+        if (safeName.isBlank()) safeName = "module";
+
+        Path file = exportsDir.resolve(safeName + ".json");
+        int counter = 1;
+        while (Files.exists(file)) {
+            file = exportsDir.resolve(safeName + "_" + counter + ".json");
+            counter++;
+        }
+
+        JsonObject envelope = GSON.toJsonTree(rule).getAsJsonObject();
+        envelope.addProperty("configVersion", ActionregulatorClient.MOD_VERSION);
+
+        try (Writer writer = Files.newBufferedWriter(file)) {
+            GSON.toJson(envelope, writer);
+        }
+        return file;
+    }
+
+    public static RuleModule importRule(Path file) throws IOException {
+        try (Reader reader = Files.newBufferedReader(file)) {
+            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+
+            JsonObject wrapper = new JsonObject();
+            wrapper.add("configVersion", json.has("configVersion")
+                    ? json.get("configVersion")
+                    : new com.google.gson.JsonPrimitive("0.1.0"));
+
+            com.google.gson.JsonArray rulesArray = new com.google.gson.JsonArray();
+            JsonObject ruleJson = json.deepCopy();
+            ruleJson.remove("configVersion");
+            rulesArray.add(ruleJson);
+            wrapper.add("rules", rulesArray);
+
+            applyMigrations(wrapper);
+
+            JsonObject migratedRule = wrapper.getAsJsonArray("rules").get(0).getAsJsonObject();
+            return GSON.fromJson(migratedRule, RuleModule.class);
+        }
+    }
+
     private static List<ConfigMigration> buildMigrations() {
         List<ConfigMigration> migrations = new ArrayList<>();
         migrations.add(new Migration_0_1_0_to_0_2_0());

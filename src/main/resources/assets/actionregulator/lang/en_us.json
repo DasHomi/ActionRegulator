@@ -3,6 +3,7 @@
   "modmenu.descriptionTranslation.actionregulator": "Regulates actions.",
 
   "actionregulator.ui.buttons.addModule": "+ Add Module",
+  "actionregulator.ui.buttons.importModule": "⬆ Import JSON",
   "actionregulator.ui.buttons.done": "Done",
 
   "actionregulator.ui.module.collapse": "▼",
@@ -10,6 +11,7 @@
   "actionregulator.ui.module.enabled": "ON",
   "actionregulator.ui.module.disabled": "OFF",
   "actionregulator.ui.module.deleteRule": "Delete Rule",
+  "actionregulator.ui.module.exportRule": "Export JSON",
 
   "actionregulator.ui.section.trigger": "Trigger",
   "actionregulator.ui.section.dimensions": "Dimensions",

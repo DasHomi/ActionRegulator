@@ -1,6 +1,7 @@
 package com.dashomi.actionregulator.config.ui;
 
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
+import com.dashomi.actionregulator.config.ConfigManager;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.NotificationType;
 import com.dashomi.actionregulator.enums.TargetMode;
@@ -19,6 +20,8 @@ import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class RuleModuleUi {
@@ -149,10 +152,54 @@ public class RuleModuleUi {
         removeBtn.margins(Insets.top(6));
         removeBtn.renderer(ButtonComponent.Renderer.flat(0xFFAA2222, 0xFFCC3333, 0xFF881111));
 
-        FlowLayout deleteRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
-        deleteRow.horizontalAlignment(HorizontalAlignment.RIGHT);
-        deleteRow.child(removeBtn);
-        body.child(deleteRow);
+        LabelComponent exportFeedback = UIComponents.label(Component.empty());
+        exportFeedback.sizing(Sizing.fill(100), Sizing.content());
+        exportFeedback.margins(Insets.top(2));
+
+        Path[] lastExported = {null};
+
+        ButtonComponent exportBtn = UIComponents.button(
+                Component.translatable("actionregulator.ui.module.exportRule"), btn -> {
+                    try {
+                        Path exported = ConfigManager.exportRule(rule);
+                        lastExported[0] = exported;
+                        String display = exported.getParent().getFileName() + "/" + exported.getFileName();
+                        exportFeedback.text(
+                                Component.literal("✔ " + display + " ↗").withColor(0xFF55FF55));
+                    } catch (IOException e) {
+                        exportFeedback.text(
+                                Component.literal("✘ " + e.getMessage()).withColor(0xFFFF5555));
+                    }
+                });
+        exportBtn.margins(Insets.top(6));
+
+        exportFeedback.mouseDown().subscribe((mouseX, mouseY) -> {
+            if (lastExported[0] != null) {
+                try {
+                    String folder = lastExported[0].getParent().toAbsolutePath().toString();
+                    String os = System.getProperty("os.name").toLowerCase();
+                    if (os.contains("win")) {
+                        new ProcessBuilder("explorer.exe", folder).start();
+                    } else if (os.contains("mac")) {
+                        new ProcessBuilder("open", folder).start();
+                    } else {
+                        new ProcessBuilder("xdg-open", folder).start();
+                    }
+                } catch (IOException ignored) {}
+                return true;
+            }
+            return false;
+        });
+
+        FlowLayout actionRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        actionRow.horizontalAlignment(HorizontalAlignment.RIGHT);
+        actionRow.verticalAlignment(VerticalAlignment.CENTER);
+        actionRow.gap(4);
+        actionRow.child(exportBtn);
+        actionRow.child(removeBtn);
+
+        body.child(actionRow);
+        body.child(exportFeedback);
 
         return body;
     }
