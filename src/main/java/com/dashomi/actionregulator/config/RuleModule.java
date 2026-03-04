@@ -16,6 +16,7 @@ public class RuleModule {
     public boolean invertTargetBlocks = false;
     public List<String> handItems = new ArrayList<>();
     public boolean invertHandItems = false;
+    public int handItemsMinDurability = -1;
     public List<String> targetEntities = new ArrayList<>();
     public boolean invertTargetEntities = false;
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));

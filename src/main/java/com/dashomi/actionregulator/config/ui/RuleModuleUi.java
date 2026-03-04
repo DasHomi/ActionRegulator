@@ -3,6 +3,9 @@ package com.dashomi.actionregulator.config.ui;
 import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.ConfigManager;
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.config.ui.section.HandItemsSectionComponent;
+import com.dashomi.actionregulator.config.ui.section.TargetBlocksSectionComponent;
+import com.dashomi.actionregulator.config.ui.section.TargetEntitiesSectionComponent;
 import com.dashomi.actionregulator.enums.NotificationType;
 import com.dashomi.actionregulator.enums.TargetMode;
 import com.dashomi.actionregulator.enums.TriggerType;
@@ -18,11 +21,9 @@ import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 public class RuleModuleUi {
     private static final String[] NOTIF_LABELS = {
@@ -37,13 +38,6 @@ public class RuleModuleUi {
             "actionregulator.ui.trigger.use"
     };
 
-    private static final List<String> ALL_BLOCKS = BuiltInRegistries.BLOCK.keySet()
-            .stream().map(Object::toString).sorted().toList();
-    private static final List<String> ALL_ITEMS = BuiltInRegistries.ITEM.keySet()
-            .stream().map(Object::toString).sorted().toList();
-    private static final List<String> ALL_ENTITIES = BuiltInRegistries.ENTITY_TYPE.keySet()
-            .stream().map(Object::toString).sorted().toList();
-
     private static final Surface DISABLED_SURFACE = Surface.PANEL;
 
     private static final ButtonComponent.Renderer NOTIF_ON  =
@@ -54,11 +48,6 @@ public class RuleModuleUi {
     private static final ButtonComponent.Renderer TRIGGER_ON  =
             ButtonComponent.Renderer.flat(0xFFAA7700, 0xFFCC9900, 0xFF885500);
     private static final ButtonComponent.Renderer TRIGGER_OFF =
-            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
-
-    private static final ButtonComponent.Renderer INVERT_ON =
-            ButtonComponent.Renderer.flat(0xFF226622, 0xFF338833, 0xFF114411);
-    private static final ButtonComponent.Renderer INVERT_OFF =
             ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
     private static final ButtonComponent.Renderer ENABLED_BTN =
@@ -241,9 +230,7 @@ public class RuleModuleUi {
     private void rebuildPickerArea(FlowLayout pickerArea) {
         pickerArea.clearChildren();
 
-        pickerArea.child(registrySectionHeader("actionregulator.ui.section.handItems", 0,
-                () -> rule.invertHandItems, v -> rule.invertHandItems = v));
-        pickerArea.child(new RegistryPickerComponent(rule.handItems, ALL_ITEMS, "item").build());
+        pickerArea.child(new HandItemsSectionComponent(rule).build());
 
         FlowLayout targetModeRow = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
         targetModeRow.gap(4);
@@ -279,41 +266,10 @@ public class RuleModuleUi {
         pickerArea.child(targetModeRow);
 
         if (rule.targetMode == TargetMode.BLOCKS) {
-            pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetBlocks", 4,
-                    () -> rule.invertTargetBlocks, v -> rule.invertTargetBlocks = v));
-            pickerArea.child(new RegistryPickerComponent(rule.targetBlocks, ALL_BLOCKS, "block").build());
+            pickerArea.child(new TargetBlocksSectionComponent(rule).build());
         } else {
-            pickerArea.child(registrySectionHeader("actionregulator.ui.section.targetEntities", 4,
-                    () -> rule.invertTargetEntities, v -> rule.invertTargetEntities = v));
-            pickerArea.child(new RegistryPickerComponent(rule.targetEntities, ALL_ENTITIES, "entity").build());
+            pickerArea.child(new TargetEntitiesSectionComponent(rule).build());
         }
-    }
-
-    private FlowLayout registrySectionHeader(String labelKey, int topMargin,
-            java.util.function.BooleanSupplier getter, java.util.function.Consumer<Boolean> setter) {
-        FlowLayout row = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
-        row.verticalAlignment(VerticalAlignment.CENTER);
-        row.gap(4);
-        if (topMargin > 0) row.margins(Insets.top(topMargin));
-
-        LabelComponent label = sectionLabel(labelKey, 0xFF1E648D);
-        label.sizing(Sizing.expand(), Sizing.content());
-
-        boolean[] state = {getter.getAsBoolean()};
-        ButtonComponent invertBtn = UIComponents.button(
-                Component.translatable(state[0] ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off"),
-                b -> {
-                    state[0] = !state[0];
-                    setter.accept(state[0]);
-                    b.setMessage(Component.translatable(state[0] ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off"));
-                    b.renderer(state[0] ? INVERT_ON : INVERT_OFF);
-                });
-        invertBtn.sizing(Sizing.fixed(68), Sizing.fixed(14));
-        invertBtn.renderer(state[0] ? INVERT_ON : INVERT_OFF);
-
-        row.child(label);
-        row.child(invertBtn);
-        return row;
     }
 
     private FlowLayout buildNotificationButtons(TextBoxComponent notifText, FlowLayout body) {

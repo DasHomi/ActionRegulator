@@ -37,5 +37,7 @@
 
   "actionregulator.ui.dimension.overworld": "Overworld",
   "actionregulator.ui.dimension.nether": "Nether",
-  "actionregulator.ui.dimension.end": "End"
+  "actionregulator.ui.dimension.end": "End",
+
+  "actionregulator.ui.handItems.minDurability.label": "Min Tool Durability:"
 }
