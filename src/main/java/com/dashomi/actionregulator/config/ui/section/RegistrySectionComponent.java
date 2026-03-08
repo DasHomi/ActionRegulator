@@ -52,33 +52,30 @@ public abstract class RegistrySectionComponent {
         section.child(buildHeader());
         section.child(new RegistryPickerComponent(selected, allEntries, registryType).build());
 
-        FlowLayout extraContent = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
-        extraContent.gap(4);
-        buildExtraOptions(extraContent);
-
-        if (!extraContent.children().isEmpty()) {
-            section.child(buildExtraOptionsDropdown(extraContent));
-        }
+        buildExtraDropdowns(section);
 
         return section;
     }
 
-    protected void buildExtraOptions(FlowLayout container) {
-        // optionally filled by subclasses
-    }
+    protected void buildExtraDropdowns(FlowLayout section) { }
 
-    private FlowLayout buildExtraOptionsDropdown(FlowLayout content) {
+    protected final FlowLayout buildDropdown(String title, Consumer<FlowLayout> filler) {
+        FlowLayout content = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
+        content.gap(4);
         content.padding(Insets.of(4, 4, 6, 4));
         content.surface(Surface.flat(0x22FFFFFF));
+        filler.accept(content);
+
+        if (content.children().isEmpty()) return null;
 
         boolean[] open = { false };
         content.sizing(Sizing.fill(100), Sizing.fixed(0));
 
         ButtonComponent toggle = UIComponents.button(
-                Component.literal("▶ Extra Options"),
+                Component.literal("▶ " + title),
                 b -> {
                     open[0] = !open[0];
-                    b.setMessage(Component.literal(open[0] ? "▼ Extra Options" : "▶ Extra Options"));
+                    b.setMessage(Component.literal((open[0] ? "▼ " : "▶ ") + title));
                     content.sizing(Sizing.fill(100), open[0] ? Sizing.content() : Sizing.fixed(0));
                 });
         toggle.sizing(Sizing.fill(100), Sizing.fixed(14));

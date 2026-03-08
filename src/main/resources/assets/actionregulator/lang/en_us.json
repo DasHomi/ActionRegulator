@@ -39,5 +39,14 @@
   "actionregulator.ui.dimension.nether": "Nether",
   "actionregulator.ui.dimension.end": "End",
 
-  "actionregulator.ui.handItems.minDurability.label": "Min Tool Durability:"
+  "actionregulator.ui.handItems.minDurability.label": "Min Tool Durability:",
+  "actionregulator.ui.handItems.durabilityThreshold.label": "Min Durability:",
+  "actionregulator.ui.handItems.customName.label": "Custom Name:",
+  "actionregulator.ui.handItems.customName.any": "Any",
+  "actionregulator.ui.handItems.customName.named": "Named",
+  "actionregulator.ui.handItems.customName.unnamed": "Default name",
+  "actionregulator.ui.handItems.customName.input.label": "Custom name:",
+
+  "actionregulator.ui.targetEntities.customName.label": "Custom Name:",
+  "actionregulator.ui.targetEntities.customName.input.label": "Custom Name:"
 }

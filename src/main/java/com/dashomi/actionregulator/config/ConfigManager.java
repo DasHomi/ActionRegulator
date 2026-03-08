@@ -74,6 +74,7 @@ public class ConfigManager {
     private static List<ConfigMigration> buildMigrations() {
         List<ConfigMigration> migrations = new ArrayList<>();
         migrations.add(new Migration_0_1_0_to_0_2_0());
+        migrations.add(new Migration_0_2_0_to_0_3_0());
         return migrations;
     }
 

@@ -1,5 +1,6 @@
 package com.dashomi.actionregulator.config;
 
+import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.NotificationType;
 import com.dashomi.actionregulator.enums.TargetMode;
 import com.dashomi.actionregulator.enums.TriggerType;
@@ -12,13 +13,24 @@ public class RuleModule {
     public boolean expanded = true;
     public TriggerType triggerType = TriggerType.ON_ATTACK;
     public TargetMode targetMode = TargetMode.BLOCKS;
+
+    // target block
     public List<String> targetBlocks = new ArrayList<>();
     public boolean invertTargetBlocks = false;
+
+    // hand item
     public List<String> handItems = new ArrayList<>();
     public boolean invertHandItems = false;
-    public int handItemsMinDurability = -1;
+    public int handItemDurabilityThreshold = -1;
+    public CustomNameMode handItemCustomNameMode = CustomNameMode.ANY;
+    public String handItemCustomNameFilter = "";
+
+    // target entity
     public List<String> targetEntities = new ArrayList<>();
     public boolean invertTargetEntities = false;
+    public CustomNameMode targetEntityCustomNameMode = CustomNameMode.ANY;
+    public String targetEntityCustomNameFilter = "";
+
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
     public String notificationMessage = "";
     public NotificationType notificationType = NotificationType.OFF;
