@@ -18,7 +18,6 @@ public class AttackBlockEvent {
     public static InteractionResult attackBlockListener(Player player, Level world, InteractionHand hand, BlockPos blockPos, Direction direction) {
         if (!player.isSpectator()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
-            String heldItemId = RegistryStringCreator.getItemId(player, hand);
             String targetBlockId = RegistryStringCreator.getBlockId(world, blockPos);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
@@ -28,9 +27,9 @@ public class AttackBlockEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (!FilterUtils.matchesFilter(rule.targetBlocks, rule.invertTargetBlocks, targetBlockId)) continue;
+                if (FilterUtils.doesNotMatchFilter(rule.targetBlocks, rule.invertTargetBlocks, targetBlockId)) continue;
 
-                if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
+                if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

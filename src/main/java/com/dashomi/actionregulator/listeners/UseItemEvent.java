@@ -18,14 +18,13 @@ public class UseItemEvent {
     public static InteractionResult useItemListener(Player player, Level world, InteractionHand hand) {
         if (!player.isSpectator()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
-            String heldItemId = RegistryStringCreator.getItemId(player, hand);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
                 if (!rule.enabled || rule.triggerType != TriggerType.ON_USE) continue;
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
+                if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 boolean activeTargetSet = rule.targetMode == TargetMode.BLOCKS
                         ? !rule.targetBlocks.isEmpty()

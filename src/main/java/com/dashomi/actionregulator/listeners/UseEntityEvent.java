@@ -19,7 +19,6 @@ public class UseEntityEvent {
     public static InteractionResult useEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         if (!player.isSpectator()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
-            String heldItemId = RegistryStringCreator.getItemId(player, hand);
             String targetEntityId = RegistryStringCreator.getEntityId(entity);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
@@ -29,9 +28,9 @@ public class UseEntityEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (!FilterUtils.matchesFilter(rule.handItems, rule.invertHandItems, heldItemId)) continue;
+                if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
-                if (!FilterUtils.matchesFilter(rule.targetEntities, rule.invertTargetEntities, targetEntityId)) continue;
+                if (FilterUtils.doesNotMatchFilter(rule.targetEntities, rule.invertTargetEntities, targetEntityId)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

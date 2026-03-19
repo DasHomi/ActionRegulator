@@ -16,8 +16,8 @@ public class RegistryStringCreator {
     }
 
     public static String getItemId(Player player, InteractionHand hand) {
-        ItemStack heldItem = player.getItemInHand(hand);
-        return BuiltInRegistries.ITEM.getKey(heldItem.getItem()).toString();
+        ItemStack handItem = player.getItemInHand(hand);
+        return BuiltInRegistries.ITEM.getKey(handItem.getItem()).toString();
     }
 
     public static String getBlockId(Level world, BlockPos blockPos) {
