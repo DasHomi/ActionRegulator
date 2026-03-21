@@ -39,14 +39,18 @@
   "actionregulator.ui.dimension.nether": "Nether",
   "actionregulator.ui.dimension.end": "End",
 
-  "actionregulator.ui.handItems.minDurability.label": "Min Tool Durability:",
-  "actionregulator.ui.handItems.durabilityThreshold.label": "Min Durability:",
-  "actionregulator.ui.handItems.customName.label": "Custom Name:",
+  "actionregulator.ui.handItems.minDurability.label": "Min tool durability:",
+  "actionregulator.ui.handItems.durabilityThreshold.label": "Min durability:",
+  "actionregulator.ui.handItems.mode.label": "Hand:",
+  "actionregulator.ui.handItems.mode.both": "Both",
+  "actionregulator.ui.handItems.mode.mainhand": "Main hand",
+  "actionregulator.ui.handItems.mode.offhand": "Offhand",
+  "actionregulator.ui.handItems.customName.label": "Custom name mode:",
   "actionregulator.ui.handItems.customName.any": "Any",
   "actionregulator.ui.handItems.customName.named": "Named",
   "actionregulator.ui.handItems.customName.unnamed": "Default name",
-  "actionregulator.ui.handItems.customName.input.label": "Custom name:",
+  "actionregulator.ui.handItems.customName.input.label": "Custom name filter:",
 
-  "actionregulator.ui.targetEntities.customName.label": "Custom Name:",
-  "actionregulator.ui.targetEntities.customName.input.label": "Custom Name:"
+  "actionregulator.ui.targetEntities.customName.label": "Custom name mode:",
+  "actionregulator.ui.targetEntities.customName.input.label": "Custom name filter:"
 }

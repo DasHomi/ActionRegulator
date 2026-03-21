@@ -22,8 +22,29 @@ public class Migration_0_2_0_to_0_3_0 implements ConfigMigration {
             for (JsonElement element : json.getAsJsonArray("rules")) {
                 if (element.isJsonObject()) {
                     JsonObject rule = element.getAsJsonObject();
-                    if (!rule.has("handItemDurabilityThreshold")) {
+
+                    if (!rule.has("handItemMode") || rule.get("handItemMode").isJsonNull()) {
+                        rule.add("handItemMode", new JsonPrimitive("BOTH"));
+                    }
+
+                    if (!rule.has("handItemDurabilityThreshold") || rule.get("handItemDurabilityThreshold").isJsonNull()) {
                         rule.add("handItemDurabilityThreshold", new JsonPrimitive(-1));
+                    }
+
+                    if (!rule.has("handItemCustomNameMode") || rule.get("handItemCustomNameMode").isJsonNull()) {
+                        rule.add("handItemCustomNameMode", new JsonPrimitive("ANY"));
+                    }
+
+                    if (!rule.has("handItemCustomNameFilter") || rule.get("handItemCustomNameFilter").isJsonNull()) {
+                        rule.add("handItemCustomNameFilter", new JsonPrimitive(""));
+                    }
+
+                    if (!rule.has("targetEntityCustomNameMode") || rule.get("targetEntityCustomNameMode").isJsonNull()) {
+                        rule.add("targetEntityCustomNameMode", new JsonPrimitive("ANY"));
+                    }
+
+                    if (!rule.has("targetEntityCustomNameFilter") || rule.get("targetEntityCustomNameFilter").isJsonNull()) {
+                        rule.add("targetEntityCustomNameFilter", new JsonPrimitive(""));
                     }
                 }
             }
@@ -31,4 +52,3 @@ public class Migration_0_2_0_to_0_3_0 implements ConfigMigration {
         json.addProperty("configVersion", getTargetVersion());
     }
 }
-

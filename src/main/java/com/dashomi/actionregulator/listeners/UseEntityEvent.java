@@ -19,7 +19,6 @@ public class UseEntityEvent {
     public static InteractionResult useEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         if (!player.isSpectator()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
-            String targetEntityId = RegistryStringCreator.getEntityId(entity);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
                 if (!rule.enabled || rule.triggerType != TriggerType.ON_USE) continue;
@@ -30,7 +29,7 @@ public class UseEntityEvent {
 
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
-                if (FilterUtils.doesNotMatchFilter(rule.targetEntities, rule.invertTargetEntities, targetEntityId)) continue;
+                if (FilterUtils.doesNotMatchTargetEntityFilter(rule, entity)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

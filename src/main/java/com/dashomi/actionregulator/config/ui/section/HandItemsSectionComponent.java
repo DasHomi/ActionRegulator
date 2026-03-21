@@ -2,6 +2,7 @@ package com.dashomi.actionregulator.config.ui.section;
 
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.CustomNameMode;
+import com.dashomi.actionregulator.enums.HandItemMode;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.component.UIComponents;
@@ -9,9 +10,9 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
+import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import java.util.List;
 
 public class HandItemsSectionComponent extends RegistrySectionComponent {
 
@@ -42,6 +43,35 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
     protected void buildExtraDropdowns(FlowLayout section) {
         FlowLayout dropdown = buildDropdown("Extra Options", container -> {
 
+            FlowLayout handModeRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            handModeRow.verticalAlignment(VerticalAlignment.CENTER);
+            handModeRow.gap(4);
+            handModeRow.child(UIComponents.label(
+                    Component.translatable("actionregulator.ui.handItems.mode.label"))
+                    .sizing(Sizing.content(), Sizing.content()));
+
+            HandItemMode[] handModes = HandItemMode.values();
+            String[] handModeLabelKeys = {
+                    "actionregulator.ui.handItems.mode.both",
+                    "actionregulator.ui.handItems.mode.mainhand",
+                    "actionregulator.ui.handItems.mode.offhand"
+            };
+            ButtonComponent[] handModeBtns = new ButtonComponent[handModes.length];
+            for (int i = 0; i < handModes.length; i++) {
+                final HandItemMode mode = handModes[i];
+                final int idx = i;
+                handModeBtns[i] = UIComponents.button(Component.translatable(handModeLabelKeys[i]), b -> {
+                    rule.handItemMode = mode;
+                    for (int j = 0; j < handModeBtns.length; j++) {
+                        handModeBtns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
+                    }
+                });
+                handModeBtns[i].sizing(Sizing.content(), Sizing.fixed(14));
+                handModeBtns[i].renderer(rule.handItemMode == mode ? MODE_ON : MODE_OFF);
+                handModeRow.child(handModeBtns[i]);
+            }
+            container.child(handModeRow);
+
             FlowLayout durRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
             durRow.verticalAlignment(VerticalAlignment.CENTER);
             durRow.gap(6);
@@ -53,10 +83,18 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
             durInput.setMaxLength(6);
             durInput.onChanged().subscribe(text -> {
                 String digitsOnly = text.replaceAll("\\D", "");
-                if (!digitsOnly.equals(text)) { durInput.text(digitsOnly); return; }
-                if (text.isBlank()) { rule.handItemDurabilityThreshold = -1; return; }
-                try { int val = Integer.parseInt(text); if (val >= 0) rule.handItemDurabilityThreshold = val; }
-                catch (NumberFormatException ignored) {}
+                if (!digitsOnly.equals(text)) {
+                    durInput.text(digitsOnly);
+                    return;
+                }
+                if (text.isBlank()) {
+                    rule.handItemDurabilityThreshold = -1;
+                    return;
+                }
+                try {
+                    int val = Integer.parseInt(text);
+                    if (val >= 0) rule.handItemDurabilityThreshold = val;
+                } catch (NumberFormatException ignored) {}
             });
             durRow.child(durInput);
             container.child(durRow);
