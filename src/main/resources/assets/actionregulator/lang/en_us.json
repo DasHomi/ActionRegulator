@@ -43,7 +43,7 @@
   "actionregulator.ui.handItems.durabilityThreshold.label": "Min durability:",
   "actionregulator.ui.handItems.mode.label": "Hand:",
   "actionregulator.ui.handItems.mode.both": "Both",
-  "actionregulator.ui.handItems.mode.mainhand": "Main hand",
+  "actionregulator.ui.handItems.mode.mainhand": "Mainhand",
   "actionregulator.ui.handItems.mode.offhand": "Offhand",
   "actionregulator.ui.handItems.customName.label": "Custom name mode:",
   "actionregulator.ui.handItems.customName.any": "Any",

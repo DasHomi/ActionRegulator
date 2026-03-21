@@ -7,7 +7,7 @@ It offers a simple and intuitive interface to configure which actions you want t
 > Action Regulator is still in early development and may contain bugs. Please do not rely on it blocking actions without prior testing. If you find any bugs, please report them on the GitHub issue tracker.
 
 > [!NOTE]
-> If you find any pain points in using the UI, please feel free to open an issue with your suggestions.
+> If you find any problems in using or understanding the Options UI, please feel free to open an issue on how it could be improved.
 
 ## Features
 Currently, there are 2 Triggers:
@@ -27,7 +27,17 @@ Inverted:
 - List empty → Activates for no items/blocks/entities
 - 1 or more entries → Activates for all items/blocks/entities except the listed ones
 
-The action will only be blocked if the hand item and the target entity/block conditions are met.
+The registry lists have additional subconditions to improve matching.
+- **Hand Item Subconditions**: 
+  - Hand selection (both, mainhand, offhand)
+  - Min durability (durability below which the rule will match)
+  - Custom name mode (any, named, default name)
+  - Custom name filter (name which the item has to match, only active if custom name mode is on any or named)
+- **Target Entity Subconditions**:
+  - Custom name mode (any, named, default name)
+  - Custom name filter (name which the item has to match, only active if custom name mode is on any or named)
+
+The action will only be blocked if the hand item and the target entity/block conditions, with subconditions, are met.
 
 In addition, each Rule has a selector for active dimensions and a selector for notification types.
 
