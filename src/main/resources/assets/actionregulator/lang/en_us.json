@@ -52,5 +52,9 @@
   "actionregulator.ui.handItems.customName.input.label": "Custom name filter:",
 
   "actionregulator.ui.targetEntities.customName.label": "Custom name mode:",
-  "actionregulator.ui.targetEntities.customName.input.label": "Custom name filter:"
+  "actionregulator.ui.targetEntities.customName.input.label": "Custom name filter:",
+
+  "key.category.actionregulator.category": "Action Regulator",
+  "key.actionregulator.temporary_override": "Temporary override",
+  "actionregulator.temporary_override.active": "Action Regulator: temporary override active"
 }

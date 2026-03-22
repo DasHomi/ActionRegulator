@@ -41,6 +41,8 @@ The action will only be blocked if the hand item and the target entity/block con
 
 In addition, each Rule has a selector for active dimensions and a selector for notification types.
 
+A global temporary override hotkey is available as well. While it is held down (default: `Right Alt`), Action Regulator will temporarily deactivate all rules.
+
 ## Sharing
 Rules can be individually exported and imported as JSON files. This allows you to share your configurations with others or transfer them between different instances of the game. If the exported rule is of an older version than the one that imports it, Action Regulator will try to apply migrations to update the rule to the latest version. However, it is recommended to keep Action Regulator updated to avoid any compatibility issues with shared rules.
 

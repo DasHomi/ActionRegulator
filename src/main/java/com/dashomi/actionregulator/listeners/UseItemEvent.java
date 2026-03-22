@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 public class UseItemEvent {
     public static InteractionResult useItemListener(Player player, Level world, InteractionHand hand) {
-        if (!player.isSpectator()) {
+        if (!player.isSpectator() && FilterUtils.ActionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {

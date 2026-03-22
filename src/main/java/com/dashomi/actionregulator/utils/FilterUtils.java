@@ -1,5 +1,6 @@
 package com.dashomi.actionregulator.utils;
 
+import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
@@ -12,6 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class FilterUtils {
+    public static boolean ActionRegulatorIsNotDisabled() {
+        return !ActionregulatorClient.isTemporaryOverrideActive();
+    }
+
     public static boolean doesNotMatchFilter(List<String> list, boolean invert, String id) {
         if (!invert) {
             return !list.isEmpty() && !list.contains(id);
