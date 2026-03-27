@@ -3,7 +3,7 @@
   "id": "actionregulator",
   "version": "${version}",
   "name": "Action Regulator",
-  "description": "Regulates actions",
+  "description": "Take full control of your interactions by setting precise, shareable rules to prevent unwanted in-game actions.",
   "authors": ["DasHomi"],
   "contact": {
     "issues": "https://github.com/DasHomi/actionregulator/issues",
@@ -25,12 +25,12 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric-api": "*",
+    "fabric-api": ">=0.144.0",
     "minecraft": "${minecraft_version}",
-    "owo": "*"
+    "owo": ">=0.13"
   },
   "suggests": {
-    "modmenu": "*"
+    "modmenu": ">=18.0.0"
   },
   "custom": {
     "modmenu": {

@@ -1,0 +1,50 @@
+name: Bug Report
+description: Report a bug you found in Action Regulator.
+title: "[BUG]: "
+labels:
+  - bug
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is the problem?
+      description: "When does the problem occur? How can it be reproduced (step by step)? What should happen instead? Please describe in detail."
+      placeholder: "I was playing when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: Installed versions
+      description: "Include Action Regulator, Minecraft, Fabric Loader, Fabric API, and other relevant mods."
+      placeholder: |
+        actionregulator: 0.3.0-alpha
+        minecraft: 26.1
+        fabric-loader: 0.xx.x
+        fabric-api: 0.xx.x
+    validations:
+      required: true
+
+  - type: upload
+    id: rules
+    attributes:
+      label: Action Regulator rules
+      description: "Please attach the JSON file with all your Action Regulator rules. You can export them in the Action Regulator options menu."
+    validations:
+      required: true
+      accept: ".json"
+
+  - type: input
+    id: logs
+    attributes:
+      label: Minecraft logs
+      description: "Please upload your Minecraft logs or crash report to [mclo.gs](https://mclo.gs/) and paste the link here."
+      placeholder: "https://mclo.gs/..."
+    validations:
+      required: false

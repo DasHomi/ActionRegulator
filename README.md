@@ -1,56 +1,76 @@
 # Action Regulator
 
-Action Regulator is a Minecraft mod that allows you to block actions in the game. 
-It offers a simple and intuitive interface to configure which actions you want to block.
+Action Regulator is a versatile Minecraft mod that gives you the power to block specific in-game actions. 
+Through a clean and intuitive interface, you can easily configure precise rules to restrict exactly what you want.
 
 > [!CAUTION]
-> Action Regulator is still in early development and may contain bugs. Please do not rely on it blocking actions without prior testing. If you find any bugs, please report them on the GitHub issue tracker.
+> Action Regulator is currently in early development and may contain bugs. Please do not rely on it for critical action-blocking without prior testing. If you encounter any bugs, please report them via the [Issue Tracker](https://github.com/DasHomi/ActionRegulator/issues)
 
 > [!NOTE]
-> If you find any problems in using or understanding the Options UI, please feel free to open an issue on how it could be improved.
+> If you experience any difficulties using or understanding the user interface, feel free to open a UI-improvement issue with your suggestions!
+
+---
 
 ## Features
-Currently, there are 2 Triggers:
-- **Attack** (left-clicking)
-- **Use** (right-clicking)
+Action Regulator lets you create and manage custom rules. Each rule consists of a primary trigger and multiple registry lists and subconditions that allow you to precisely define the circumstances under which an action should be blocked.
+**For an action to be blocked, all configured conditions, registry lists, and subconditions must be met.**
 
-Each trigger has registry-lists that can be configured:
-- **Hand Items**
-- Either **Target Entities** or **Target Blocks**  
+Currently, there are two primary **Triggers**:
+- **Attack** (Left-clicking)
+- **Use** (Right-clicking)
 
-The registry selection can be inverted.  
-Default:
-- List empty → Activates for all items/blocks/entities
-- 1 or more entries → Activates only for the listed items/blocks/entities  
+Each trigger allows you to configure registry lists for your **Hand Items** and either **Target Entities** or **Target Blocks**.
 
-Inverted:
-- List empty → Activates for no items/blocks/entities
-- 1 or more entries → Activates for all items/blocks/entities except the listed ones
+You can toggle the behavior of these lists between **Default** and **Inverted**:
 
-The registry lists have additional subconditions to improve matching.
-- **Hand Item Subconditions**: 
-  - Hand selection (both, mainhand, offhand)
-  - Min durability (durability below which the rule will match)
-  - Custom name mode (any, named, default name)
-  - Custom name filter (name which the item has to match, only active if custom name mode is on any or named)
-- **Target Entity Subconditions**:
-  - Custom name mode (any, named, default name)
-  - Custom name filter (name which the item has to match, only active if custom name mode is on any or named)
+| Mode         | Empty List                                   | List with Entries                                                   |
+|:-------------|:---------------------------------------------|:--------------------------------------------------------------------|
+| **Default**  | Activates for **all** items/blocks/entities. | Activates **only** for the listed items/blocks/entities.            |
+| **Inverted** | Activates for **no** items/blocks/entities.  | Activates for all items/blocks/entities **except** the listed ones. |
 
-The action will only be blocked if the hand item and the target entity/block conditions, with subconditions, are met.
+### Subconditions
+To make your rules even more precise, registry lists support subconditions.
 
-In addition, each Rule has a selector for active dimensions and a selector for notification types.
+**Hand Item Subconditions:**
+- **Hand Selection:** Choose between Any, Mainhand, or Offhand.
+- **Min Durability:** The rule only triggers if the item's durability falls below this threshold.
+- **Custom Name Mode:** Filter by Any, Named, or Default Name.
+- **Custom Name Filter:** Specify an exact name the item must match (only active if Custom Name Mode is set to "Any" or "Named").
 
-A global temporary override hotkey is available as well. While it is held down (default: `Right Alt`), Action Regulator will temporarily deactivate all rules.
+**Target Entity Subconditions:**
+- **Custom Name Mode:** Filter by Any, Named, or Default Name.
+- **Custom Name Filter:** Specify an exact name the entity must match (only active if Custom Name Mode is set to "Any" or "Named").
 
-## Sharing
-Rules can be individually exported and imported as JSON files. This allows you to share your configurations with others or transfer them between different instances of the game. If the exported rule is of an older version than the one that imports it, Action Regulator will try to apply migrations to update the rule to the latest version. However, it is recommended to keep Action Regulator updated to avoid any compatibility issues with shared rules.
+### Additional Rule Options
+- **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
+- **Notifications:** Customize how and if you want to be notified when an action is blocked.
+
+### Additional Options
+- **Global Override Hotkey:** Hold down the override hotkey (Default: `Right Alt`) to temporarily deactivate all Action Regulator rules.
+
+## Sharing & Exporting
+Rules can be individually exported and imported as JSON files. This makes it incredibly easy to share your custom configurations with others or sync them across different modpacks.
+
+*Note: If you import a rule created in an older version of the mod, Action Regulator will attempt to auto-migrate it to the current version. However, keeping the mod updated is highly recommended to ensure maximum compatibility.*
+
+## Future Plans
+Action Regulator is still in very early development and there are many features and improvements already planned for future versions. Here are some of the most important ones which may or may not come in the future:
+- Support for Item/Block/Entity Tags to select multiple items/blocks/entities at once (e.g., all types of wood).
+-More subconditions for even more precise rules (e.g., item enchantments, target block state, etc.).
+-Player conditions (e.g., Health, Hunger, Status Effects, Swimming, etc.).
+-Improved custom name matching (e.g., RegEx support).
+-Improved notification system (e.g., templates for block names, Minecraft text formatting, etc.).
+
+If you have any suggestions for features or improvements, feel free to open a feature request issue!
 
 ## Compatibility
-Action Regulator is currently compatible with the latest version of Minecraft and Fabric.
-Compatibility with other mods:
+Action Regulator is built for the latest version of Minecraft  
+
+Mod Compatibility:
 - Compatible with Preventer
 - Compatible with most mods that add items/blocks/entities. As long as they follow the normal way for adding these they should be selectable in the registry lists.
+
+I currently have no plans to add support for other mod loaders like Forge or active support for versions other than the latest Minecraft version.
 
 ## Dependencies
 - [Fabric API](https://github.com/FabricMC/fabric)

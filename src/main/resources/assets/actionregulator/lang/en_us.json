@@ -1,6 +1,6 @@
 {
   "actionregulator.ui.title": "Action Regulator",
-  "modmenu.descriptionTranslation.actionregulator": "Regulates actions.",
+  "modmenu.descriptionTranslation.actionregulator": "Take full control of your interactions by setting precise, shareable rules to prevent unwanted in-game actions.",
 
   "actionregulator.ui.buttons.addModule": "+ Add Module",
   "actionregulator.ui.buttons.importModule": "⬆ Import JSON",

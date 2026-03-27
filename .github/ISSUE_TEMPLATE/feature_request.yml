@@ -1,0 +1,28 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Action Regulator.
+title: "[FEATURE]: "
+labels:
+  - enhancement
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to suggest a new feature!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description
+      description: What is the feature you would like to see added? Please be as specific as possible.
+      placeholder: "I would like to have the ability to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Why is this needed?
+      description: How would this feature improve Action Regulator for you and other users? What problem does it solve?
+      placeholder: "This would save time when..."
+    validations:
+      required: true
