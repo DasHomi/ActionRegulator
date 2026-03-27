@@ -13,9 +13,9 @@ public class EndClientTickEvent {
         boolean isTemporaryOverrideActive = ActionregulatorClient.isTemporaryOverrideActive();
 
         if (isTemporaryOverrideActive) {
-            client.player.displayClientMessage(Component.translatable("actionregulator.temporary_override.active"), true);
+            client.player.sendOverlayMessage(Component.translatable("actionregulator.temporary_override.active"));
         } else if (wasTemporaryOverrideActive) {
-            client.player.displayClientMessage(Component.empty(), true);
+            client.player.sendOverlayMessage(Component.empty());
         }
 
         wasTemporaryOverrideActive = isTemporaryOverrideActive;

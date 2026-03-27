@@ -13,10 +13,10 @@ public class RuleAppliedNotification {
                 player.playSound(SoundEvents.NOTE_BLOCK_BASEDRUM.value(), 1.0f, 1.1f);
                 break;
             case SYMBOL:
-                player.displayClientMessage(Component.literal("❌").withStyle(ChatFormatting.RED), true);
+                player.sendOverlayMessage(Component.literal("❌").withStyle(ChatFormatting.RED));
                 break;
             case TEXT:
-                player.displayClientMessage(Component.literal(rule.notificationMessage).withStyle(ChatFormatting.WHITE), true);
+                player.sendOverlayMessage(Component.literal(rule.notificationMessage).withStyle(ChatFormatting.WHITE));
                 break;
         }
     }

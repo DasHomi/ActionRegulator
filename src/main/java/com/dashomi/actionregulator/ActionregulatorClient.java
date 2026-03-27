@@ -8,7 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -33,7 +33,7 @@ public class ActionregulatorClient implements ClientModInitializer {
 
         KeyMapping.Category ACTION_REGULATOR_CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "category"));
         temporaryBypassKey = new KeyMapping("key.actionregulator.temporary_override", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, ACTION_REGULATOR_CATEGORY);
-        KeyBindingHelper.registerKeyBinding(temporaryBypassKey);
+        KeyMappingHelper.registerKeyMapping(temporaryBypassKey);
 
         AttackBlockCallback.EVENT.register(AttackBlockEvent::attackBlockListener);
         AttackEntityCallback.EVENT.register(AttackEntityEvent::attackEntityListener);
