@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class FilterUtils {
-    public static boolean ActionRegulatorIsNotDisabled() {
+    public static boolean actionRegulatorIsNotDisabled() {
         return !ActionregulatorClient.isTemporaryOverrideActive();
     }
 
@@ -41,10 +41,10 @@ public class FilterUtils {
         }
 
         boolean hasCustomName = handItem.has(DataComponents.CUSTOM_NAME);
-        if (rule.handItemCustomNameMode == CustomNameMode.NAMED && !hasCustomName) {
+        if (rule.handItemCustomNameMode == CustomNameMode.CUSTOM_NAME && !hasCustomName) {
             return true;
         }
-        if (rule.handItemCustomNameMode == CustomNameMode.UNNAMED && hasCustomName) {
+        if (rule.handItemCustomNameMode == CustomNameMode.DEFAULT_NAME && hasCustomName) {
             return true;
         }
 
@@ -55,13 +55,12 @@ public class FilterUtils {
             }
         }
 
-        String customNameFilter = rule.handItemCustomNameFilter == null ? "" : rule.handItemCustomNameFilter.trim();
-        if (!customNameFilter.isEmpty()) {
-            if (!hasCustomName) {
-                return false;
+        if (rule.handItemCustomNameMode == CustomNameMode.FILTER) {
+            String customNameFilter = rule.handItemCustomNameFilter == null ? "" : rule.handItemCustomNameFilter.trim();
+            if (!customNameFilter.isEmpty()) {
+                String itemName = handItem.getHoverName().getString();
+                return !itemName.toLowerCase(Locale.ROOT).contains(customNameFilter.toLowerCase(Locale.ROOT));
             }
-            String itemName = handItem.getHoverName().getString();
-            return !itemName.toLowerCase(Locale.ROOT).contains(customNameFilter.toLowerCase(Locale.ROOT));
         }
 
         return false;
@@ -74,20 +73,19 @@ public class FilterUtils {
         }
 
         boolean hasCustomName = entity.hasCustomName();
-        if (rule.targetEntityCustomNameMode == CustomNameMode.NAMED && !hasCustomName) {
+        if (rule.targetEntityCustomNameMode == CustomNameMode.CUSTOM_NAME && !hasCustomName) {
             return true;
         }
-        if (rule.targetEntityCustomNameMode == CustomNameMode.UNNAMED && hasCustomName) {
+        if (rule.targetEntityCustomNameMode == CustomNameMode.DEFAULT_NAME && hasCustomName) {
             return true;
         }
 
-        String customNameFilter = rule.targetEntityCustomNameFilter == null ? "" : rule.targetEntityCustomNameFilter.trim();
-        if (!customNameFilter.isEmpty()) {
-            if (!hasCustomName) {
-                return false;
+        if (rule.targetEntityCustomNameMode == CustomNameMode.FILTER) {
+            String customNameFilter = rule.targetEntityCustomNameFilter == null ? "" : rule.targetEntityCustomNameFilter.trim();
+            if (!customNameFilter.isEmpty()) {
+                String entityName = entity.getName().getString();
+                return !entityName.toLowerCase(Locale.ROOT).contains(customNameFilter.toLowerCase(Locale.ROOT));
             }
-            String entityName = entity.getCustomName() == null ? "" : entity.getCustomName().getString();
-            return !entityName.toLowerCase(Locale.ROOT).contains(customNameFilter.toLowerCase(Locale.ROOT));
         }
 
         return false;

@@ -32,12 +32,12 @@ To make your rules even more precise, registry lists support subconditions.
 **Hand Item Subconditions:**
 - **Hand Selection:** Choose between Any, Mainhand, or Offhand.
 - **Min Durability:** The rule only triggers if the item's durability falls below this threshold.
-- **Custom Name Mode:** Filter by Any, Named, or Default Name.
-- **Custom Name Filter:** Specify an exact name the item must match (only active if Custom Name Mode is set to "Any" or "Named").
+- **Custom Name Mode:** Match by **Filter**, **Custom Name**, or **Default Name**.
+- **Custom Name Filter:** Specify an exact name the item must match (only active if Custom Name Mode is set to Filter).
 
 **Target Entity Subconditions:**
-- **Custom Name Mode:** Filter by Any, Named, or Default Name.
-- **Custom Name Filter:** Specify an exact name the entity must match (only active if Custom Name Mode is set to "Any" or "Named").
+- **Custom Name Mode:** Match by **Filter**, **Custom Name**, or **Default Name**.
+- **Custom Name Filter:** Specify an exact name the entity must match (only active if Custom Name Mode is set to Filter).
 
 ### Additional Rule Options
 - **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).

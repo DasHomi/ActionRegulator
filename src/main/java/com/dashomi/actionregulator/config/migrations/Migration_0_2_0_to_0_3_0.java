@@ -32,7 +32,7 @@ public class Migration_0_2_0_to_0_3_0 implements ConfigMigration {
                     }
 
                     if (!rule.has("handItemCustomNameMode") || rule.get("handItemCustomNameMode").isJsonNull()) {
-                        rule.add("handItemCustomNameMode", new JsonPrimitive("ANY"));
+                        rule.add("handItemCustomNameMode", new JsonPrimitive("FILTER"));
                     }
 
                     if (!rule.has("handItemCustomNameFilter") || rule.get("handItemCustomNameFilter").isJsonNull()) {
@@ -40,7 +40,7 @@ public class Migration_0_2_0_to_0_3_0 implements ConfigMigration {
                     }
 
                     if (!rule.has("targetEntityCustomNameMode") || rule.get("targetEntityCustomNameMode").isJsonNull()) {
-                        rule.add("targetEntityCustomNameMode", new JsonPrimitive("ANY"));
+                        rule.add("targetEntityCustomNameMode", new JsonPrimitive("FILTER"));
                     }
 
                     if (!rule.has("targetEntityCustomNameFilter") || rule.get("targetEntityCustomNameFilter").isJsonNull()) {

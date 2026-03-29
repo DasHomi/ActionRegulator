@@ -107,25 +107,11 @@ public abstract class RegistrySectionComponent {
 
         CustomNameMode[] modes = CustomNameMode.values();
         String[] labelKeys = {
-                "actionregulator.ui.customName.any",
-                "actionregulator.ui.customName.named",
-                "actionregulator.ui.customName.unnamed"
+                "actionregulator.ui.customName.filter",
+                "actionregulator.ui.customName.custom",
+                "actionregulator.ui.customName.default"
         };
         ButtonComponent[] btns = new ButtonComponent[modes.length];
-        for (int i = 0; i < modes.length; i++) {
-            final CustomNameMode mode = modes[i];
-            final int idx = i;
-            btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
-                setter.accept(mode);
-                for (int j = 0; j < btns.length; j++)
-                    btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
-            });
-            btns[i].sizing(Sizing.content(), Sizing.fixed(14));
-            btns[i].renderer(getter.get() == modes[i] ? MODE_ON : MODE_OFF);
-            modeRow.child(btns[i]);
-        }
-        container.child(modeRow);
-
         FlowLayout nameRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         nameRow.verticalAlignment(VerticalAlignment.CENTER);
         nameRow.gap(6);
@@ -136,6 +122,27 @@ public abstract class RegistrySectionComponent {
         nameInput.setMaxLength(64);
         nameInput.onChanged().subscribe(filterSetter::accept);
         nameRow.child(nameInput);
+
+        Runnable updateFilterRowVisibility = () -> {
+            boolean showFilter = getter.get() == CustomNameMode.FILTER;
+            nameRow.sizing(Sizing.fill(100), showFilter ? Sizing.content() : Sizing.fixed(0));
+        };
+
+        for (int i = 0; i < modes.length; i++) {
+            final CustomNameMode mode = modes[i];
+            final int idx = i;
+            btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
+                setter.accept(mode);
+                for (int j = 0; j < btns.length; j++)
+                    btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
+                updateFilterRowVisibility.run();
+            });
+            btns[i].sizing(Sizing.content(), Sizing.fixed(14));
+            btns[i].renderer(getter.get() == modes[i] ? MODE_ON : MODE_OFF);
+            modeRow.child(btns[i]);
+        }
+        container.child(modeRow);
+        updateFilterRowVisibility.run();
         container.child(nameRow);
     }
 

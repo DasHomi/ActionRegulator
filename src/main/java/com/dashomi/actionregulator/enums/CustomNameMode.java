@@ -1,8 +1,8 @@
 package com.dashomi.actionregulator.enums;
 
 public enum CustomNameMode {
-    ANY,
-    NAMED,
-    UNNAMED
+    FILTER,
+    CUSTOM_NAME,
+    DEFAULT_NAME
 }
 

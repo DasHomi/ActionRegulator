@@ -24,7 +24,7 @@
     "actionregulator.client.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.18.4",
     "fabric-api": ">=0.144.0",
     "minecraft": "${minecraft_version}",
     "owo": ">=0.13"

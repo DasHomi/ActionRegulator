@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class UseEntityEvent {
     public static InteractionResult useEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
-        if (!player.isSpectator() && FilterUtils.ActionRegulatorIsNotDisabled()) {
+        if (!player.isSpectator() && FilterUtils.actionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {

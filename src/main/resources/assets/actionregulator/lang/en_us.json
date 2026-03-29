@@ -48,11 +48,12 @@
   "actionregulator.ui.handItems.mode.both": "Both",
   "actionregulator.ui.handItems.mode.mainhand": "Mainhand",
   "actionregulator.ui.handItems.mode.offhand": "Offhand",
-  "actionregulator.ui.customName.label": "Custom name mode:",
-  "actionregulator.ui.customName.any": "Any",
-  "actionregulator.ui.customName.named": "Named",
-  "actionregulator.ui.customName.unnamed": "Default name",
-  "actionregulator.ui.customName.input.label": "Custom name filter:",
+
+  "actionregulator.ui.customName.label": "Name mode:",
+  "actionregulator.ui.customName.filter": "Filter",
+  "actionregulator.ui.customName.custom": "Custom name",
+  "actionregulator.ui.customName.default": "Default name",
+  "actionregulator.ui.customName.input.label": "Name filter:",
 
   "key.category.actionregulator.category": "Action Regulator",
   "key.actionregulator.temporary_override": "Temporary override",

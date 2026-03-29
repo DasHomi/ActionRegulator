@@ -24,13 +24,13 @@ public class RuleModule {
     public boolean invertHandItems = false;
     public HandItemMode handItemMode = HandItemMode.BOTH;
     public int handItemDurabilityThreshold = -1;
-    public CustomNameMode handItemCustomNameMode = CustomNameMode.ANY;
+    public CustomNameMode handItemCustomNameMode = CustomNameMode.FILTER;
     public String handItemCustomNameFilter = "";
 
     // target entity
     public List<String> targetEntities = new ArrayList<>();
     public boolean invertTargetEntities = false;
-    public CustomNameMode targetEntityCustomNameMode = CustomNameMode.ANY;
+    public CustomNameMode targetEntityCustomNameMode = CustomNameMode.FILTER;
     public String targetEntityCustomNameFilter = "";
 
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
