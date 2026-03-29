@@ -164,17 +164,7 @@ public class RuleModuleUi {
 
         exportFeedback.mouseDown().subscribe((mouseX, mouseY) -> {
             if (lastExported[0] != null) {
-                try {
-                    String folder = lastExported[0].getParent().toAbsolutePath().toString();
-                    String os = System.getProperty("os.name").toLowerCase();
-                    if (os.contains("win")) {
-                        new ProcessBuilder("explorer.exe", folder).start();
-                    } else if (os.contains("mac")) {
-                        new ProcessBuilder("open", folder).start();
-                    } else {
-                        new ProcessBuilder("xdg-open", folder).start();
-                    }
-                } catch (IOException ignored) {}
+                ConfigManager.revealFile(lastExported[0]);
                 return true;
             }
             return false;

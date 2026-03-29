@@ -1,5 +1,6 @@
 package com.dashomi.actionregulator.config;
 
+import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.ui.RuleModuleUi;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.ButtonComponent;
@@ -9,11 +10,16 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.ScrollContainer;
 import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.*;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +39,21 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
                 t.setDaemon(true);
                 return t;
             });
+
+    private void rebuildModuleList() {
+        moduleList.clearChildren();
+        for (RuleModule rule : config.rules) {
+            moduleList.child(new RuleModuleUi(rule).build(config, moduleList));
+        }
+    }
+
+    private void setAllModulesEnabled(boolean enabled) {
+        for (RuleModule rule : config.rules) {
+            rule.enabled = enabled;
+        }
+        rebuildModuleList();
+    }
+
 
     private void showImportError(ButtonComponent btn, String message) {
         btn.renderer(ERROR_RENDERER);
@@ -81,29 +102,34 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
                     moduleList.child(new RuleModuleUi(newRule).build(config, moduleList));
                 });
 
+        ButtonComponent enableAllBtn = UIComponents.button(
+                Component.translatable("actionregulator.ui.buttons.enableAll"), btn -> setAllModulesEnabled(true));
+
+        ButtonComponent disableAllBtn = UIComponents.button(
+                Component.translatable("actionregulator.ui.buttons.disableAll"), btn -> setAllModulesEnabled(false));
+
         ButtonComponent importBtn = UIComponents.button(
                 Component.translatable("actionregulator.ui.buttons.importModule"), btn -> {
                     Thread t = new Thread(() -> {
-                        Path exportsDir = net.fabricmc.loader.api.FabricLoader.getInstance()
+                        Path exportsDir = FabricLoader.getInstance()
                                 .getConfigDir().resolve("actionregulator").resolve("exports");
-                        String startPath = java.nio.file.Files.isDirectory(exportsDir)
+                        String startPath = Files.isDirectory(exportsDir)
                                 ? exportsDir.toString() + java.io.File.separator
                                 : null;
 
                         String chosen = TinyFileDialogs.tinyfd_openFileDialog(
                                 "Import Rule Module", startPath,
-                                org.lwjgl.PointerBuffer.allocateDirect(1).put(0,
-                                        org.lwjgl.system.MemoryUtil.memUTF8("*.json")),
+                                PointerBuffer.allocateDirect(1).put(0,
+                                        MemoryUtil.memUTF8("*.json")),
                                 "JSON files (*.json)", false);
 
                         if (chosen == null) return;
                         try {
-                            RuleModule imported = ConfigManager.importRule(Path.of(chosen));
-                            config.rules.add(imported);
-                            this.minecraft.execute(() ->
-                                    moduleList.child(new RuleModuleUi(imported).build(config, moduleList)));
+                            List<RuleModule> importedRules = ConfigManager.importRules(Path.of(chosen));
+                            config.rules.addAll(importedRules);
+                            this.minecraft.execute(this::rebuildModuleList);
                         } catch (Exception e) {
-                            com.dashomi.actionregulator.ActionregulatorClient.LOGGER.error(
+                            ActionregulatorClient.LOGGER.error(
                                     "Failed to import rule module", e);
                             this.minecraft.execute(() -> showImportError(btn, e.getMessage()));
                         }
@@ -112,20 +138,37 @@ public class ConfigScreen extends BaseOwoScreen<FlowLayout> {
                     t.start();
                 });
 
+        ButtonComponent exportAllBtn = UIComponents.button(
+                Component.translatable("actionregulator.ui.buttons.exportAll"), btn -> {
+                    Thread t = new Thread(() -> {
+                        try {
+                            Path exportedFile = ConfigManager.exportAllRules(config.rules);
+                            ConfigManager.revealFile(exportedFile);
+                        } catch (Exception e) {
+                            ActionregulatorClient.LOGGER.error(
+                                    "Failed to export all rule modules", e);
+                            this.minecraft.execute(() -> showImportError(btn, e.getMessage()));
+                        }
+                    }, "actionregulator-export-all");
+                    t.setDaemon(true);
+                    t.start();
+                });
+
         header.child(title);
         importErrorLabel = UIComponents.label(Component.empty());
         importErrorLabel.sizing(Sizing.content(), Sizing.content());
         header.child(importErrorLabel);
+        header.child(enableAllBtn);
+        header.child(disableAllBtn);
         header.child(importBtn);
+        header.child(exportAllBtn);
         header.child(addBtn);
         root.child(header);
 
         moduleList = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         moduleList.gap(4);
 
-        for (RuleModule rule : config.rules) {
-            moduleList.child(new RuleModuleUi(rule).build(config, moduleList));
-        }
+        rebuildModuleList();
 
         ScrollContainer<FlowLayout> scroll = UIContainers.verticalScroll(
                 Sizing.fill(100), Sizing.expand(), moduleList);

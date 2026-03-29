@@ -9,8 +9,6 @@ Through a clean and intuitive interface, you can easily configure precise rules 
 > [!NOTE]
 > If you experience any difficulties using or understanding the user interface, feel free to open a UI-improvement issue with your suggestions!
 
----
-
 ## Features
 Action Regulator lets you create and manage custom rules. Each rule consists of a primary trigger and multiple registry lists and subconditions that allow you to precisely define the circumstances under which an action should be blocked.
 **For an action to be blocked, all configured conditions, registry lists, and subconditions must be met.**
@@ -56,10 +54,10 @@ Rules can be individually exported and imported as JSON files. This makes it inc
 ## Future Plans
 Action Regulator is still in very early development and there are many features and improvements already planned for future versions. Here are some of the most important ones which may or may not come in the future:
 - Support for Item/Block/Entity Tags to select multiple items/blocks/entities at once (e.g., all types of wood).
--More subconditions for even more precise rules (e.g., item enchantments, target block state, etc.).
--Player conditions (e.g., Health, Hunger, Status Effects, Swimming, etc.).
--Improved custom name matching (e.g., RegEx support).
--Improved notification system (e.g., templates for block names, Minecraft text formatting, etc.).
+- More subconditions for even more precise rules (e.g., item enchantments, target block state, etc.).
+- Player conditions (e.g., Health, Hunger, Status Effects, Swimming, etc.).
+- Improved custom name matching (e.g., RegEx support).
+- Improved notification system (e.g., templates for block names, Minecraft text formatting, etc.).
 
 If you have any suggestions for features or improvements, feel free to open a feature request issue!
 

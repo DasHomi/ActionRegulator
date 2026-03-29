@@ -10,9 +10,17 @@ import io.wispforest.owo.ui.core.*;
 import net.minecraft.network.chat.Component;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.List;
+import com.dashomi.actionregulator.enums.CustomNameMode;
+import io.wispforest.owo.ui.component.TextBoxComponent;
 
 public abstract class RegistrySectionComponent {
+
+    protected static final ButtonComponent.Renderer MODE_ON =
+            ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
+    protected static final ButtonComponent.Renderer MODE_OFF =
+            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
     private static final ButtonComponent.Renderer INVERT_ON =
             ButtonComponent.Renderer.flat(0xFF226622, 0xFF338833, 0xFF114411);
@@ -87,6 +95,48 @@ public abstract class RegistrySectionComponent {
         wrapper.child(toggle);
         wrapper.child(content);
         return wrapper;
+    }
+
+    protected void buildCustomNameOptions(FlowLayout container, Supplier<CustomNameMode> getter, Consumer<CustomNameMode> setter, Supplier<String> filterGetter, Consumer<String> filterSetter) {
+        FlowLayout modeRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        modeRow.verticalAlignment(VerticalAlignment.CENTER);
+        modeRow.gap(4);
+        modeRow.child(UIComponents.label(
+                Component.translatable("actionregulator.ui.customName.label"))
+                .sizing(Sizing.content(), Sizing.content()));
+
+        CustomNameMode[] modes = CustomNameMode.values();
+        String[] labelKeys = {
+                "actionregulator.ui.customName.any",
+                "actionregulator.ui.customName.named",
+                "actionregulator.ui.customName.unnamed"
+        };
+        ButtonComponent[] btns = new ButtonComponent[modes.length];
+        for (int i = 0; i < modes.length; i++) {
+            final CustomNameMode mode = modes[i];
+            final int idx = i;
+            btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
+                setter.accept(mode);
+                for (int j = 0; j < btns.length; j++)
+                    btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
+            });
+            btns[i].sizing(Sizing.content(), Sizing.fixed(14));
+            btns[i].renderer(getter.get() == modes[i] ? MODE_ON : MODE_OFF);
+            modeRow.child(btns[i]);
+        }
+        container.child(modeRow);
+
+        FlowLayout nameRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        nameRow.verticalAlignment(VerticalAlignment.CENTER);
+        nameRow.gap(6);
+        nameRow.child(UIComponents.label(
+                Component.translatable("actionregulator.ui.customName.input.label"))
+                .sizing(Sizing.content(), Sizing.content()));
+        TextBoxComponent nameInput = UIComponents.textBox(Sizing.expand(), filterGetter.get());
+        nameInput.setMaxLength(64);
+        nameInput.onChanged().subscribe(filterSetter::accept);
+        nameRow.child(nameInput);
+        container.child(nameRow);
     }
 
     private FlowLayout buildHeader() {

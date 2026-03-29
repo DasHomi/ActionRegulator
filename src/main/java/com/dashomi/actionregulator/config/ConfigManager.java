@@ -5,6 +5,8 @@ import com.dashomi.actionregulator.config.migrations.ConfigMigration;
 import com.dashomi.actionregulator.config.migrations.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
@@ -20,28 +22,39 @@ import java.util.List;
 public class ConfigManager {
     private static final String CONFIG_FILE_NAME = "actionregulator.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final List<ConfigMigration> MIGRATIONS = List.of(
+            new Migration_0_1_0_to_0_2_0(),
+            new Migration_0_2_0_to_0_3_0()
+    );
 
     public static Path exportRule(RuleModule rule) throws IOException {
+        String safeName = rule.name
+                .replaceAll("[^a-zA-Z0-9_\\-]", "_")
+                .replaceAll("_+", "_");
+        if (safeName.isBlank()) safeName = "module";
+
+        return saveExport(safeName, List.of(rule));
+    }
+
+    public static Path exportAllRules(List<RuleModule> rules) throws IOException {
+        return saveExport("all_rules", rules);
+    }
+
+    private static Path saveExport(String baseName, List<RuleModule> rules) throws IOException {
         Path exportsDir = FabricLoader.getInstance()
                 .getConfigDir()
                 .resolve("actionregulator")
                 .resolve("exports");
         Files.createDirectories(exportsDir);
 
-        String safeName = rule.name
-                .replaceAll("[^a-zA-Z0-9_\\-]", "_")
-                .replaceAll("_+", "_");
-        if (safeName.isBlank()) safeName = "module";
-
-        Path file = exportsDir.resolve(safeName + ".json");
+        Path file = exportsDir.resolve(baseName + ".json");
         int counter = 1;
         while (Files.exists(file)) {
-            file = exportsDir.resolve(safeName + "_" + counter + ".json");
+            file = exportsDir.resolve(baseName + "_" + counter + ".json");
             counter++;
         }
 
-        JsonObject envelope = GSON.toJsonTree(rule).getAsJsonObject();
-        envelope.addProperty("configVersion", ActionregulatorClient.MOD_VERSION);
+        JsonObject envelope = buildExportEnvelope(rules);
 
         try (Writer writer = Files.newBufferedWriter(file)) {
             GSON.toJson(envelope, writer);
@@ -49,33 +62,67 @@ public class ConfigManager {
         return file;
     }
 
-    public static RuleModule importRule(Path file) throws IOException {
+    public static List<RuleModule> importRules(Path file) throws IOException {
         try (Reader reader = Files.newBufferedReader(file)) {
-            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-
-            JsonObject wrapper = new JsonObject();
-            wrapper.add("configVersion", json.has("configVersion")
-                    ? json.get("configVersion")
-                    : new com.google.gson.JsonPrimitive("0.1.0"));
-
-            com.google.gson.JsonArray rulesArray = new com.google.gson.JsonArray();
-            JsonObject ruleJson = json.deepCopy();
-            ruleJson.remove("configVersion");
-            rulesArray.add(ruleJson);
-            wrapper.add("rules", rulesArray);
+            JsonElement parsed = JsonParser.parseReader(reader);
+            JsonObject wrapper = normalizeImportJson(parsed);
 
             applyMigrations(wrapper);
 
-            JsonObject migratedRule = wrapper.getAsJsonArray("rules").get(0).getAsJsonObject();
-            return GSON.fromJson(migratedRule, RuleModule.class);
+            List<RuleModule> importedRules = new ArrayList<>();
+            JsonArray migratedRules = wrapper.getAsJsonArray("rules");
+            for (JsonElement ruleElement : migratedRules) {
+                importedRules.add(GSON.fromJson(ruleElement, RuleModule.class));
+            }
+            return importedRules;
         }
     }
 
-    private static List<ConfigMigration> buildMigrations() {
-        List<ConfigMigration> migrations = new ArrayList<>();
-        migrations.add(new Migration_0_1_0_to_0_2_0());
-        migrations.add(new Migration_0_2_0_to_0_3_0());
-        return migrations;
+    private static JsonObject normalizeImportJson(JsonElement parsed) throws IOException {
+        if (parsed == null || parsed.isJsonNull() || !parsed.isJsonObject()) {
+            throw new IOException("Unsupported import JSON format: expected object with configVersion and rules[]");
+        }
+
+        JsonObject wrapper = parsed.getAsJsonObject().deepCopy();
+
+        if (!wrapper.has("configVersion") || !wrapper.get("configVersion").isJsonPrimitive() || !wrapper.get("configVersion").getAsJsonPrimitive().isString()) {
+            throw new IOException("Import JSON must contain a string configVersion");
+        }
+
+        if (!wrapper.has("rules") || !wrapper.get("rules").isJsonArray()) {
+            throw new IOException("Import JSON must contain rules[]");
+        }
+
+        JsonArray rulesArray = wrapper.getAsJsonArray("rules");
+        if (rulesArray.isEmpty()) {
+            throw new IOException("No rule modules found in import file");
+        }
+
+        for (JsonElement ruleElement : rulesArray) {
+            if (!ruleElement.isJsonObject()) {
+                throw new IOException("Import JSON rules[] entries must be objects");
+            }
+        }
+
+        return wrapper;
+    }
+
+    private static JsonObject buildExportRuleJson(RuleModule rule) {
+        JsonObject exportRule = GSON.toJsonTree(rule).getAsJsonObject();
+        exportRule.addProperty("enabled", true);
+        exportRule.addProperty("expanded", false);
+        return exportRule;
+    }
+
+    private static JsonObject buildExportEnvelope(List<RuleModule> rules) {
+        JsonObject envelope = new JsonObject();
+        envelope.addProperty("configVersion", ActionregulatorClient.MOD_VERSION);
+        JsonArray exportedRules = new JsonArray();
+        for (RuleModule rule : rules) {
+            exportedRules.add(buildExportRuleJson(rule));
+        }
+        envelope.add("rules", exportedRules);
+        return envelope;
     }
 
     public static ActionRegulatorConfig load() {
@@ -122,6 +169,22 @@ public class ConfigManager {
         }
     }
 
+    public static void revealFile(Path file) {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                new ProcessBuilder("explorer.exe", "/select,", file.toAbsolutePath().toString()).start();
+            } else if (os.contains("mac")) {
+                new ProcessBuilder("open", "-R", file.toAbsolutePath().toString()).start();
+            } else {
+                Path parent = file.getParent();
+                if (parent != null) {
+                    new ProcessBuilder("xdg-open", parent.toAbsolutePath().toString()).start();
+                }
+            }
+        } catch (IOException ignored) {}
+    }
+
     private static Path getConfigPath() {
         return FabricLoader.getInstance()
                 .getConfigDir()
@@ -143,11 +206,10 @@ public class ConfigManager {
                 "Config version mismatch (stored: {}, mod: {}). Applying migrations…",
                 storedVersion, currentVersion);
 
-        List<ConfigMigration> migrations = buildMigrations();
+        List<ConfigMigration> sortedMigrations = new ArrayList<>(MIGRATIONS);
+        sortedMigrations.sort(Comparator.comparing(ConfigMigration::getFromVersion, ConfigManager::compareVersions));
 
-        migrations.sort(Comparator.comparing(ConfigMigration::getFromVersion, ConfigManager::compareVersions));
-
-        for (ConfigMigration migration : migrations) {
+        for (ConfigMigration migration : sortedMigrations) {
             String migratedVersion = json.has("configVersion")
                     ? json.get("configVersion").getAsString()
                     : "0.0.0";
@@ -177,4 +239,3 @@ public class ConfigManager {
         return 0;
     }
 }
-

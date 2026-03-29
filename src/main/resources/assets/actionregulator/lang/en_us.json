@@ -3,7 +3,10 @@
   "modmenu.descriptionTranslation.actionregulator": "Take full control of your interactions by setting precise, shareable rules to prevent unwanted in-game actions.",
 
   "actionregulator.ui.buttons.addModule": "+ Add Module",
+  "actionregulator.ui.buttons.enableAll": "Enable All",
+  "actionregulator.ui.buttons.disableAll": "Disable All",
   "actionregulator.ui.buttons.importModule": "⬆ Import JSON",
+  "actionregulator.ui.buttons.exportAll": "⬇ Export All",
   "actionregulator.ui.buttons.done": "Done",
 
   "actionregulator.ui.module.collapse": "▼",
@@ -45,14 +48,11 @@
   "actionregulator.ui.handItems.mode.both": "Both",
   "actionregulator.ui.handItems.mode.mainhand": "Mainhand",
   "actionregulator.ui.handItems.mode.offhand": "Offhand",
-  "actionregulator.ui.handItems.customName.label": "Custom name mode:",
-  "actionregulator.ui.handItems.customName.any": "Any",
-  "actionregulator.ui.handItems.customName.named": "Named",
-  "actionregulator.ui.handItems.customName.unnamed": "Default name",
-  "actionregulator.ui.handItems.customName.input.label": "Custom name filter:",
-
-  "actionregulator.ui.targetEntities.customName.label": "Custom name mode:",
-  "actionregulator.ui.targetEntities.customName.input.label": "Custom name filter:",
+  "actionregulator.ui.customName.label": "Custom name mode:",
+  "actionregulator.ui.customName.any": "Any",
+  "actionregulator.ui.customName.named": "Named",
+  "actionregulator.ui.customName.unnamed": "Default name",
+  "actionregulator.ui.customName.input.label": "Custom name filter:",
 
   "key.category.actionregulator.category": "Action Regulator",
   "key.actionregulator.temporary_override": "Temporary override",

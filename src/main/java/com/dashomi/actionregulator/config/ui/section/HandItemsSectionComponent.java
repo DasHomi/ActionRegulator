@@ -1,7 +1,6 @@
 package com.dashomi.actionregulator.config.ui.section;
 
 import com.dashomi.actionregulator.config.RuleModule;
-import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
@@ -18,11 +17,6 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
 
     private static final List<String> ALL_ITEMS = BuiltInRegistries.ITEM.keySet()
             .stream().map(Object::toString).sorted().toList();
-
-    private static final ButtonComponent.Renderer MODE_ON =
-            ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
-    private static final ButtonComponent.Renderer MODE_OFF =
-            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
 
     private final RuleModule rule;
 
@@ -99,45 +93,13 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
             durRow.child(durInput);
             container.child(durRow);
 
-            FlowLayout modeRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            modeRow.verticalAlignment(VerticalAlignment.CENTER);
-            modeRow.gap(4);
-            modeRow.child(UIComponents.label(
-                    Component.translatable("actionregulator.ui.handItems.customName.label"))
-                    .sizing(Sizing.content(), Sizing.content()));
-
-            CustomNameMode[] modes = CustomNameMode.values();
-            String[] labelKeys = {
-                    "actionregulator.ui.handItems.customName.any",
-                    "actionregulator.ui.handItems.customName.named",
-                    "actionregulator.ui.handItems.customName.unnamed"
-            };
-            ButtonComponent[] btns = new ButtonComponent[modes.length];
-            for (int i = 0; i < modes.length; i++) {
-                final CustomNameMode mode = modes[i];
-                final int idx = i;
-                btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
-                    rule.handItemCustomNameMode = mode;
-                    for (int j = 0; j < btns.length; j++)
-                        btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
-                });
-                btns[i].sizing(Sizing.content(), Sizing.fixed(14));
-                btns[i].renderer(rule.handItemCustomNameMode == modes[i] ? MODE_ON : MODE_OFF);
-                modeRow.child(btns[i]);
-            }
-            container.child(modeRow);
-
-            FlowLayout nameRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            nameRow.verticalAlignment(VerticalAlignment.CENTER);
-            nameRow.gap(6);
-            nameRow.child(UIComponents.label(
-                    Component.translatable("actionregulator.ui.handItems.customName.input.label"))
-                    .sizing(Sizing.content(), Sizing.content()));
-            TextBoxComponent nameInput = UIComponents.textBox(Sizing.expand(), rule.handItemCustomNameFilter);
-            nameInput.setMaxLength(64);
-            nameInput.onChanged().subscribe(text -> rule.handItemCustomNameFilter = text);
-            nameRow.child(nameInput);
-            container.child(nameRow);
+            buildCustomNameOptions(
+                    container,
+                    () -> rule.handItemCustomNameMode,
+                    v -> rule.handItemCustomNameMode = v,
+                    () -> rule.handItemCustomNameFilter,
+                    v -> rule.handItemCustomNameFilter = v
+            );
         });
 
         if (dropdown != null) section.child(dropdown);
