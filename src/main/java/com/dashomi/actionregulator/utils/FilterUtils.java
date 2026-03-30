@@ -6,6 +6,8 @@ import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -63,6 +65,13 @@ public class FilterUtils {
             }
         }
 
+        if (rule.handItemCustomNameMode == CustomNameMode.REGEX_FILTER) {
+            String customNameFilter = rule.handItemCustomNameFilter == null ? "" : rule.handItemCustomNameFilter.trim();
+            if (customNameFilter.isEmpty()) return true;
+            String itemName = handItem.getHoverName().getString();
+            return !matchesRegex(itemName, customNameFilter);
+        }
+
         return false;
     }
 
@@ -88,6 +97,21 @@ public class FilterUtils {
             }
         }
 
+        if (rule.targetEntityCustomNameMode == CustomNameMode.REGEX_FILTER) {
+            String customNameFilter = rule.targetEntityCustomNameFilter == null ? "" : rule.targetEntityCustomNameFilter.trim();
+            if (customNameFilter.isEmpty()) return true;
+            String entityName = entity.getName().getString();
+            return !matchesRegex(entityName, customNameFilter);
+        }
+
         return false;
+    }
+
+    private static boolean matchesRegex(String value, String regex) {
+        try {
+            return Pattern.compile(regex).matcher(value).find();
+        } catch (PatternSyntaxException ignored) {
+            return false;
+        }
     }
 }

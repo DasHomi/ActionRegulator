@@ -106,11 +106,6 @@ public abstract class RegistrySectionComponent {
                 .sizing(Sizing.content(), Sizing.content()));
 
         CustomNameMode[] modes = CustomNameMode.values();
-        String[] labelKeys = {
-                "actionregulator.ui.customName.filter",
-                "actionregulator.ui.customName.custom",
-                "actionregulator.ui.customName.default"
-        };
         ButtonComponent[] btns = new ButtonComponent[modes.length];
         FlowLayout nameRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         nameRow.verticalAlignment(VerticalAlignment.CENTER);
@@ -124,14 +119,15 @@ public abstract class RegistrySectionComponent {
         nameRow.child(nameInput);
 
         Runnable updateFilterRowVisibility = () -> {
-            boolean showFilter = getter.get() == CustomNameMode.FILTER;
+            CustomNameMode selectedMode = getter.get();
+            boolean showFilter = selectedMode == CustomNameMode.FILTER || selectedMode == CustomNameMode.REGEX_FILTER;
             nameRow.sizing(Sizing.fill(100), showFilter ? Sizing.content() : Sizing.fixed(0));
         };
 
         for (int i = 0; i < modes.length; i++) {
             final CustomNameMode mode = modes[i];
             final int idx = i;
-            btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
+            btns[i] = UIComponents.button(Component.translatable(getCustomNameModeLabelKey(mode)), b -> {
                 setter.accept(mode);
                 for (int j = 0; j < btns.length; j++)
                     btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
@@ -144,6 +140,15 @@ public abstract class RegistrySectionComponent {
         container.child(modeRow);
         updateFilterRowVisibility.run();
         container.child(nameRow);
+    }
+
+    private String getCustomNameModeLabelKey(CustomNameMode mode) {
+        return switch (mode) {
+            case FILTER -> "actionregulator.ui.customName.filter";
+            case REGEX_FILTER -> "actionregulator.ui.customName.regexFilter";
+            case CUSTOM_NAME -> "actionregulator.ui.customName.custom";
+            case DEFAULT_NAME -> "actionregulator.ui.customName.default";
+        };
     }
 
     private FlowLayout buildHeader() {

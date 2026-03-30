@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 @Environment(EnvType.CLIENT)
 public class ActionregulatorClient implements ClientModInitializer {
     public static final String MOD_ID = "actionregulator";
-    public static final String MOD_VERSION = "0.3.0";
+    public static final String MOD_VERSION = "0.4.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     private static KeyMapping temporaryBypassKey;

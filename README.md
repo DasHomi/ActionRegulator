@@ -32,12 +32,16 @@ To make your rules even more precise, registry lists support subconditions.
 **Hand Item Subconditions:**
 - **Hand Selection:** Choose between Any, Mainhand, or Offhand.
 - **Min Durability:** The rule only triggers if the item's durability falls below this threshold.
-- **Custom Name Mode:** Match by **Filter**, **Custom Name**, or **Default Name**.
-- **Custom Name Filter:** Specify an exact name the item must match (only active if Custom Name Mode is set to Filter).
+- **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
+- **Custom Name Filter** 
+  - **Mode → Filter:** Specify text the item name must contain.
+  - **Mode → Regex Filter:** Specify a regular expression the item name must match.
 
 **Target Entity Subconditions:**
-- **Custom Name Mode:** Match by **Filter**, **Custom Name**, or **Default Name**.
-- **Custom Name Filter:** Specify an exact name the entity must match (only active if Custom Name Mode is set to Filter).
+- **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
+- **Custom Name Filter**
+    - **Mode → Filter:** Specify text the item name must contain.
+    - **Mode → Regex Filter:** Specify a regular expression the item name must match.
 
 ### Additional Rule Options
 - **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
@@ -73,3 +77,4 @@ I currently have no plans to add support for other mod loaders like Forge or act
 ## Dependencies
 - [Fabric API](https://github.com/FabricMC/fabric)
 - [Owo Lib](https://github.com/wisp-forest/owo-lib)
+- [Mod Menu](https://github.com/TerraformersMC/ModMenu) needed to configure rules in the ui

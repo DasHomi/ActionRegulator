@@ -24,7 +24,8 @@ public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final List<ConfigMigration> MIGRATIONS = List.of(
             new Migration_0_1_0_to_0_2_0(),
-            new Migration_0_2_0_to_0_3_0()
+            new Migration_0_2_0_to_0_3_0(),
+            new Migration_0_3_0_to_0_4_0()
     );
 
     public static Path exportRule(RuleModule rule) throws IOException {

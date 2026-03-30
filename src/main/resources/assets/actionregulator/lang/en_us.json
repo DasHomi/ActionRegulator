@@ -51,6 +51,7 @@
 
   "actionregulator.ui.customName.label": "Name mode:",
   "actionregulator.ui.customName.filter": "Filter",
+  "actionregulator.ui.customName.regexFilter": "Regex filter",
   "actionregulator.ui.customName.custom": "Custom name",
   "actionregulator.ui.customName.default": "Default name",
   "actionregulator.ui.customName.input.label": "Name filter:",
