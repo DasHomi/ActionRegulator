@@ -31,7 +31,7 @@ To make your rules even more precise, registry lists support subconditions.
 
 **Hand Item Subconditions:**
 - **Hand Selection:** Choose between Any, Mainhand, or Offhand.
-- **Min Durability:** The rule only triggers if the item's durability falls below this threshold.
+- **Durability:** Chose above or below a certain durability threshold.
 - **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
 - **Custom Name Filter** 
   - **Mode → Filter:** Specify text the item name must contain.

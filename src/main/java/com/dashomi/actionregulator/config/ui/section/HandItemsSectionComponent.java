@@ -1,6 +1,7 @@
 package com.dashomi.actionregulator.config.ui.section;
 
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
@@ -68,10 +69,11 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
 
             FlowLayout durRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
             durRow.verticalAlignment(VerticalAlignment.CENTER);
-            durRow.gap(6);
+            durRow.gap(4);
             durRow.child(UIComponents.label(
-                    Component.translatable("actionregulator.ui.handItems.durabilityThreshold.label"))
+                    Component.translatable("actionregulator.ui.handItems.durability.label"))
                     .sizing(Sizing.content(), Sizing.content()));
+
             String initialDur = rule.handItemDurabilityThreshold < 0 ? "" : String.valueOf(rule.handItemDurabilityThreshold);
             TextBoxComponent durInput = UIComponents.textBox(Sizing.fixed(48), initialDur);
             durInput.setMaxLength(6);
@@ -90,6 +92,33 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
                     if (val >= 0) rule.handItemDurabilityThreshold = val;
                 } catch (NumberFormatException ignored) {}
             });
+
+            HandItemDurabilityMode[] durabilityModes = {
+                    HandItemDurabilityMode.IGNORED,
+                    HandItemDurabilityMode.ABOVE,
+                    HandItemDurabilityMode.BELOW
+            };
+            String[] durabilityModeLabelKeys = {
+                    "actionregulator.ui.handItems.durability.ignored",
+                    "actionregulator.ui.handItems.durability.above",
+                    "actionregulator.ui.handItems.durability.below"
+            };
+            ButtonComponent[] durabilityModeButtons = new ButtonComponent[durabilityModes.length];
+            for (int i = 0; i < durabilityModes.length; i++) {
+                final HandItemDurabilityMode mode = durabilityModes[i];
+                final int idx = i;
+                durabilityModeButtons[i] = UIComponents.button(Component.translatable(durabilityModeLabelKeys[i]), b -> {
+                    rule.handItemDurabilityMode = mode;
+                    durInput.setEditable(mode != HandItemDurabilityMode.IGNORED);
+                    for (int j = 0; j < durabilityModeButtons.length; j++) {
+                        durabilityModeButtons[j].renderer(j == idx ? MODE_ON : MODE_OFF);
+                    }
+                });
+                durabilityModeButtons[i].sizing(Sizing.content(), Sizing.fixed(14));
+                durabilityModeButtons[i].renderer(rule.handItemDurabilityMode == mode ? MODE_ON : MODE_OFF);
+                durRow.child(durabilityModeButtons[i]);
+            }
+            durInput.setEditable(rule.handItemDurabilityMode != HandItemDurabilityMode.IGNORED);
             durRow.child(durInput);
             container.child(durRow);
 

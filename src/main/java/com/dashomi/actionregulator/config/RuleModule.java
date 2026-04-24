@@ -1,10 +1,7 @@
 package com.dashomi.actionregulator.config;
 
-import com.dashomi.actionregulator.enums.CustomNameMode;
-import com.dashomi.actionregulator.enums.HandItemMode;
-import com.dashomi.actionregulator.enums.NotificationType;
-import com.dashomi.actionregulator.enums.TargetMode;
-import com.dashomi.actionregulator.enums.TriggerType;
+import com.dashomi.actionregulator.enums.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +21,7 @@ public class RuleModule {
     public boolean invertHandItems = false;
     public HandItemMode handItemMode = HandItemMode.BOTH;
     public int handItemDurabilityThreshold = -1;
+    public HandItemDurabilityMode handItemDurabilityMode = HandItemDurabilityMode.IGNORED;
     public CustomNameMode handItemCustomNameMode = CustomNameMode.FILTER;
     public String handItemCustomNameFilter = "";
 

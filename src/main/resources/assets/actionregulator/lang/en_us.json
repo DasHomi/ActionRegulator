@@ -42,8 +42,10 @@
   "actionregulator.ui.dimension.nether": "Nether",
   "actionregulator.ui.dimension.end": "End",
 
-  "actionregulator.ui.handItems.minDurability.label": "Min tool durability:",
-  "actionregulator.ui.handItems.durabilityThreshold.label": "Min durability:",
+  "actionregulator.ui.handItems.durability.label": "Durability",
+  "actionregulator.ui.handItems.durability.above": "Above",
+  "actionregulator.ui.handItems.durability.below": "Below",
+  "actionregulator.ui.handItems.durability.ignored": "Ignored",
   "actionregulator.ui.handItems.mode.label": "Hand:",
   "actionregulator.ui.handItems.mode.both": "Both",
   "actionregulator.ui.handItems.mode.mainhand": "Mainhand",

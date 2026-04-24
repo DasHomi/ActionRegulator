@@ -22,6 +22,10 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
             for (JsonElement element : json.getAsJsonArray("rules")) {
                 if (element.isJsonObject()) {
                     JsonObject rule = element.getAsJsonObject();
+
+                    if (!rule.has("handItemDurabilityMode") || rule.get("handItemDurabilityMode").isJsonNull()) {
+                        rule.add("handItemDurabilityMode", new JsonPrimitive("IGNORED"));
+                    }
                 }
             }
         }

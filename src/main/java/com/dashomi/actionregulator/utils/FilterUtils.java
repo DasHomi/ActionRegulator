@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.utils;
 import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.CustomNameMode;
+import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
 import java.util.List;
 import java.util.Locale;
@@ -50,10 +51,18 @@ public class FilterUtils {
             return true;
         }
 
-        if (rule.handItemDurabilityThreshold >= 0 && handItem.isDamageableItem()) {
+        if (rule.handItemDurabilityMode != HandItemDurabilityMode.IGNORED
+                && rule.handItemDurabilityThreshold >= 0
+                && handItem.isDamageableItem()) {
             int remainingDurability = handItem.getMaxDamage() - handItem.getDamageValue();
-            if (remainingDurability > rule.handItemDurabilityThreshold) {
-                return true;
+            if (rule.handItemDurabilityMode == HandItemDurabilityMode.ABOVE) {
+                if (remainingDurability < rule.handItemDurabilityThreshold) {
+                    return true;
+                }
+            } else if (rule.handItemDurabilityMode == HandItemDurabilityMode.BELOW) {
+                if (remainingDurability > rule.handItemDurabilityThreshold) {
+                    return true;
+                }
             }
         }
 
