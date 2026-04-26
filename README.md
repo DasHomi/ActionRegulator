@@ -18,6 +18,7 @@ Currently, there are two primary **Triggers**:
 - **Use** (Right-clicking)
 
 Each trigger allows you to configure registry lists for your **Hand Items** and either **Target Entities** or **Target Blocks**.
+You can also select Item/Block/Entity tags to select multiple items/blocks/entities at once (e.g., all types of wood).
 
 You can toggle the behavior of these lists between **Default** and **Inverted**:
 

@@ -34,6 +34,9 @@ public abstract class RegistrySectionComponent {
     private final List<String> selected;
     private final List<String> allEntries;
     private final String registryType;
+    private final List<String> selectedTags;
+    private final List<String> allTagEntries;
+    private final String tagRegistryType;
 
     protected RegistrySectionComponent(
             String labelKey,
@@ -44,6 +47,21 @@ public abstract class RegistrySectionComponent {
             List<String> allEntries,
             String registryType
     ) {
+        this(labelKey, topMargin, invertGetter, invertSetter, selected, allEntries, registryType, null, null, null);
+    }
+
+    protected RegistrySectionComponent(
+            String labelKey,
+            int topMargin,
+            BooleanSupplier invertGetter,
+            Consumer<Boolean> invertSetter,
+            List<String> selected,
+            List<String> allEntries,
+            String registryType,
+            List<String> selectedTags,
+            List<String> allTagEntries,
+            String tagRegistryType
+    ) {
         this.labelKey = labelKey;
         this.topMargin = topMargin;
         this.invertGetter = invertGetter;
@@ -51,6 +69,9 @@ public abstract class RegistrySectionComponent {
         this.selected = selected;
         this.allEntries = allEntries;
         this.registryType = registryType;
+        this.selectedTags = selectedTags;
+        this.allTagEntries = allTagEntries;
+        this.tagRegistryType = tagRegistryType;
     }
 
     public FlowLayout build() {
@@ -58,7 +79,13 @@ public abstract class RegistrySectionComponent {
         section.gap(4);
 
         section.child(buildHeader());
+        section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.ids")));
         section.child(new RegistryPickerComponent(selected, allEntries, registryType).build());
+
+        if (selectedTags != null && allTagEntries != null && tagRegistryType != null) {
+            section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.tags")));
+            section.child(new RegistryPickerComponent(selectedTags, allTagEntries, tagRegistryType).build());
+        }
 
         buildExtraDropdowns(section);
 

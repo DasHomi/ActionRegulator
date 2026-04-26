@@ -14,10 +14,12 @@ public class RuleModule {
 
     // target block
     public List<String> targetBlocks = new ArrayList<>();
+    public List<String> targetBlockTags = new ArrayList<>();
     public boolean invertTargetBlocks = false;
 
     // hand item
     public List<String> handItems = new ArrayList<>();
+    public List<String> handItemTags = new ArrayList<>();
     public boolean invertHandItems = false;
     public HandItemMode handItemMode = HandItemMode.BOTH;
     public int handItemDurabilityThreshold = -1;
@@ -27,6 +29,7 @@ public class RuleModule {
 
     // target entity
     public List<String> targetEntities = new ArrayList<>();
+    public List<String> targetEntityTypeTags = new ArrayList<>();
     public boolean invertTargetEntities = false;
     public CustomNameMode targetEntityCustomNameMode = CustomNameMode.FILTER;
     public String targetEntityCustomNameFilter = "";

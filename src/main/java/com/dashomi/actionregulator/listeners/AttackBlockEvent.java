@@ -27,7 +27,7 @@ public class AttackBlockEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
-                if (FilterUtils.doesNotMatchFilter(rule.targetBlocks, rule.invertTargetBlocks, targetBlockId)) continue;
+                if (FilterUtils.doesNotMatchBlockFilter(rule, targetBlockId, world.getBlockState(blockPos))) continue;
 
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 

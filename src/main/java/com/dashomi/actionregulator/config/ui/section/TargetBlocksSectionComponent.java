@@ -8,6 +8,8 @@ public class TargetBlocksSectionComponent extends RegistrySectionComponent {
 
     private static final List<String> ALL_BLOCKS = BuiltInRegistries.BLOCK.keySet()
             .stream().map(Object::toString).sorted().toList();
+    private static final List<String> ALL_BLOCK_TAGS = BuiltInRegistries.BLOCK.getTags()
+            .map(tag -> toTagSelector(tag.key().location().toString())).distinct().sorted().toList();
 
     public TargetBlocksSectionComponent(RuleModule rule) {
         super(
@@ -17,8 +19,15 @@ public class TargetBlocksSectionComponent extends RegistrySectionComponent {
                 v -> rule.invertTargetBlocks = v,
                 rule.targetBlocks,
                 ALL_BLOCKS,
-                "block"
+                "block",
+                rule.targetBlockTags,
+                ALL_BLOCK_TAGS,
+                "block_tag"
         );
+    }
+
+    private static String toTagSelector(String rawTag) {
+        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
     }
 }
 

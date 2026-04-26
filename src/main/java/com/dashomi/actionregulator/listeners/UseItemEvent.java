@@ -27,8 +27,8 @@ public class UseItemEvent {
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 boolean activeTargetSet = rule.targetMode == TargetMode.BLOCKS
-                        ? !rule.targetBlocks.isEmpty()
-                        : !rule.targetEntities.isEmpty();
+                        ? !rule.targetBlocks.isEmpty() || !rule.targetBlockTags.isEmpty()
+                        : !rule.targetEntities.isEmpty() || !rule.targetEntityTypeTags.isEmpty();
                 if (activeTargetSet) continue;
 
                 ItemStack stack = player.getItemInHand(hand);

@@ -9,6 +9,8 @@ public class TargetEntitiesSectionComponent extends RegistrySectionComponent {
 
     private static final List<String> ALL_ENTITIES = BuiltInRegistries.ENTITY_TYPE.keySet()
             .stream().map(Object::toString).sorted().toList();
+    private static final List<String> ALL_ENTITY_TAGS = BuiltInRegistries.ENTITY_TYPE.getTags()
+            .map(tag -> toTagSelector(tag.key().location().toString())).distinct().sorted().toList();
 
     private final RuleModule rule;
 
@@ -20,7 +22,10 @@ public class TargetEntitiesSectionComponent extends RegistrySectionComponent {
                 v -> rule.invertTargetEntities = v,
                 rule.targetEntities,
                 ALL_ENTITIES,
-                "entity"
+                "entity",
+                rule.targetEntityTypeTags,
+                ALL_ENTITY_TAGS,
+                "entity_tag"
         );
         this.rule = rule;
     }
@@ -38,5 +43,9 @@ public class TargetEntitiesSectionComponent extends RegistrySectionComponent {
         });
 
         if (dropdown != null) section.child(dropdown);
+    }
+
+    private static String toTagSelector(String rawTag) {
+        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
     }
 }

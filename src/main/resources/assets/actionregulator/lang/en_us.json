@@ -29,6 +29,8 @@
 
   "actionregulator.ui.registryinvert.on": "Invert: ON",
   "actionregulator.ui.registryinvert.off": "Invert: OFF",
+  "actionregulator.ui.registry.ids": "IDs",
+  "actionregulator.ui.registry.tags": "Tags",
 
   "actionregulator.ui.trigger.use": "Use (Right Click)",
   "actionregulator.ui.trigger.attack": "Attack (Left Click)",

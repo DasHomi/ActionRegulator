@@ -1,6 +1,7 @@
 package com.dashomi.actionregulator.config.migrations;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -23,6 +24,10 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
                 if (element.isJsonObject()) {
                     JsonObject rule = element.getAsJsonObject();
 
+                    ensureTagList(rule, "targetBlockTags");
+                    ensureTagList(rule, "handItemTags");
+                    ensureTagList(rule, "targetEntityTypeTags");
+
                     if (!rule.has("handItemDurabilityMode") || rule.get("handItemDurabilityMode").isJsonNull()) {
                         rule.add("handItemDurabilityMode", new JsonPrimitive("IGNORED"));
                     }
@@ -30,5 +35,11 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
             }
         }
         json.addProperty("configVersion", getTargetVersion());
+    }
+
+    private static void ensureTagList(JsonObject rule, String fieldName) {
+        if (!rule.has(fieldName) || !rule.get(fieldName).isJsonArray()) {
+            rule.add(fieldName, new JsonArray());
+        }
     }
 }

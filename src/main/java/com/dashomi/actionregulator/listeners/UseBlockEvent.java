@@ -28,7 +28,7 @@ public class UseBlockEvent {
 
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
-                if (FilterUtils.doesNotMatchFilter(rule.targetBlocks, rule.invertTargetBlocks, targetBlockId)) continue;
+                if (FilterUtils.doesNotMatchBlockFilter(rule, targetBlockId, world.getBlockState(blockHitResult.getBlockPos()))) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);
 

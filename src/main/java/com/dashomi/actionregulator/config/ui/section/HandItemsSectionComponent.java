@@ -18,6 +18,8 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
 
     private static final List<String> ALL_ITEMS = BuiltInRegistries.ITEM.keySet()
             .stream().map(Object::toString).sorted().toList();
+    private static final List<String> ALL_ITEM_TAGS = BuiltInRegistries.ITEM.getTags()
+            .map(tag -> toTagSelector(tag.key().location().toString())).distinct().sorted().toList();
 
     private final RuleModule rule;
 
@@ -29,7 +31,10 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
                 v -> rule.invertHandItems = v,
                 rule.handItems,
                 ALL_ITEMS,
-                "item"
+                "item",
+                rule.handItemTags,
+                ALL_ITEM_TAGS,
+                "item_tag"
         );
         this.rule = rule;
     }
@@ -132,5 +137,9 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
         });
 
         if (dropdown != null) section.child(dropdown);
+    }
+
+    private static String toTagSelector(String rawTag) {
+        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
     }
 }
