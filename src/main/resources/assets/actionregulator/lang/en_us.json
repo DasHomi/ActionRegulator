@@ -23,6 +23,13 @@
   "actionregulator.ui.section.targetBlocks": "Target Blocks",
   "actionregulator.ui.section.handItems": "Hand Items",
   "actionregulator.ui.section.targetEntities": "Target Entities",
+  "actionregulator.ui.section.playerConditions": "Player Conditions",
+
+  "actionregulator.ui.playerConditions.elytra": "Elytra Flying:",
+  "actionregulator.ui.playerConditions.swimming": "Swimming:",
+  "actionregulator.ui.playerConditions.mode.ignored": "Ignored",
+  "actionregulator.ui.playerConditions.mode.required": "Required",
+  "actionregulator.ui.playerConditions.mode.forbidden": "Forbidden",
 
   "actionregulator.ui.targetmode.blocks": "Blocks",
   "actionregulator.ui.targetmode.entities": "Entities",

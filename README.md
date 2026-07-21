@@ -46,6 +46,11 @@ To make your rules even more precise, registry lists support subconditions.
 
 ### Additional Rule Options
 - **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
+- **Player Conditions:** Restrict rules to the player's current state. Currently **Elytra Flying** and
+  **Swimming**, each with three modes:
+    - **Ignored:** The state does not affect the rule.
+    - **Required:** The rule only applies while the state is active (e.g. block attacks *only* while flying).
+    - **Forbidden:** The rule only applies while the state is inactive.
 - **Notifications:** Customize how and if you want to be notified when an action is blocked.
 
 ### Additional Options

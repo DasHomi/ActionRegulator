@@ -34,6 +34,10 @@ public class RuleModule {
     public CustomNameMode targetEntityCustomNameMode = CustomNameMode.FILTER;
     public String targetEntityCustomNameFilter = "";
 
+    // player conditions
+    public PlayerConditionMode elytraFlyingCondition = PlayerConditionMode.IGNORED;
+    public PlayerConditionMode swimmingCondition = PlayerConditionMode.IGNORED;
+
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
     public String notificationMessage = "";
     public NotificationType notificationType = NotificationType.OFF;

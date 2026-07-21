@@ -31,10 +31,19 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
                     if (!rule.has("handItemDurabilityMode") || rule.get("handItemDurabilityMode").isJsonNull()) {
                         rule.add("handItemDurabilityMode", new JsonPrimitive("IGNORED"));
                     }
+
+                    ensureIgnored(rule, "elytraFlyingCondition");
+                    ensureIgnored(rule, "swimmingCondition");
                 }
             }
         }
         json.addProperty("configVersion", getTargetVersion());
+    }
+
+    private static void ensureIgnored(JsonObject rule, String fieldName) {
+        if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
+            rule.add(fieldName, new JsonPrimitive("IGNORED"));
+        }
     }
 
     private static void ensureTagList(JsonObject rule, String fieldName) {

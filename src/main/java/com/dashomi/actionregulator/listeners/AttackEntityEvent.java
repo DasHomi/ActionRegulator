@@ -27,6 +27,8 @@ public class AttackEntityEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
+                if (FilterUtils.doesNotMatchPlayerConditions(rule, player)) continue;
+
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 if (FilterUtils.doesNotMatchTargetEntityFilter(rule, entity)) continue;

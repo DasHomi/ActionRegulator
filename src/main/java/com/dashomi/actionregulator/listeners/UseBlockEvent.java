@@ -26,6 +26,8 @@ public class UseBlockEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
+                if (FilterUtils.doesNotMatchPlayerConditions(rule, player)) continue;
+
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 if (FilterUtils.doesNotMatchBlockFilter(rule, targetBlockId, world.getBlockState(blockHitResult.getBlockPos()))) continue;

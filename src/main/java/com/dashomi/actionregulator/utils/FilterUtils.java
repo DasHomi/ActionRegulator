@@ -5,6 +5,7 @@ import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
+import com.dashomi.actionregulator.enums.PlayerConditionMode;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -24,6 +25,17 @@ import net.minecraft.world.level.block.state.BlockState;
 public class FilterUtils {
     public static boolean actionRegulatorIsNotDisabled() {
         return !ActionregulatorClient.isTemporaryOverrideActive();
+    }
+
+    public static boolean doesNotMatchPlayerConditions(RuleModule rule, Player player) {
+        return conditionFails(rule.elytraFlyingCondition, player.isFallFlying())
+                || conditionFails(rule.swimmingCondition, player.isSwimming());
+    }
+
+    private static boolean conditionFails(PlayerConditionMode mode, boolean state) {
+        if (mode == PlayerConditionMode.REQUIRED) return !state;
+        if (mode == PlayerConditionMode.FORBIDDEN) return state;
+        return false;
     }
 
     public static boolean doesNotMatchBlockFilter(RuleModule rule, String blockId, BlockState blockState) {
