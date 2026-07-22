@@ -11,8 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class RegistryStringCreator {
     public static String getDimensionId(Level world) {
-        String currentDimension = world.dimension().toString();
-        return currentDimension.substring(currentDimension.indexOf(" / ") + 3, currentDimension.length() - 1);
+        return world.dimension().identifier().toString();
     }
 
     public static String getItemId(Player player, InteractionHand hand) {
@@ -21,7 +20,10 @@ public class RegistryStringCreator {
     }
 
     public static String getBlockId(Level world, BlockPos blockPos) {
-        BlockState blockState = world.getBlockState(blockPos);
+        return getBlockId(world.getBlockState(blockPos));
+    }
+
+    public static String getBlockId(BlockState blockState) {
         return BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
     }
 
