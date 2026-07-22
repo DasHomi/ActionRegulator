@@ -32,6 +32,8 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
                         rule.add("handItemDurabilityMode", new JsonPrimitive("IGNORED"));
                     }
 
+                    ensureIgnored(rule, "waterloggedCondition");
+
                     ensureIgnored(rule, "elytraFlyingCondition");
                     ensureIgnored(rule, "swimmingCondition");
 

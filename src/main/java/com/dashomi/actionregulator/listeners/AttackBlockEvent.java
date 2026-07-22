@@ -31,6 +31,8 @@ public class AttackBlockEvent {
 
                 if (FilterUtils.doesNotMatchBlockFilter(rule, targetBlockId, world.getBlockState(blockPos))) continue;
 
+                if (FilterUtils.doesNotMatchBlockConditions(rule, world.getBlockState(blockPos))) continue;
+
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 RuleAppliedNotification.sendNotification(player, rule);

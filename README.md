@@ -44,6 +44,12 @@ To make your rules even more precise, registry lists support subconditions.
     - **Mode → Filter:** Specify text the item name must contain.
     - **Mode → Regex Filter:** Specify a regular expression the item name must match.
 
+**Target Block Subconditions:**
+- **Waterlogged:** Restrict the rule based on whether the target block is waterlogged, with three modes:
+    - **Ignored:** The block state does not affect the rule.
+    - **Required:** The rule only applies while the target block is waterlogged.
+    - **Forbidden:** The rule only applies while the target block is not waterlogged.
+
 ### Additional Rule Options
 - **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
 - **Player Conditions:** Restrict rules to the player's current state:

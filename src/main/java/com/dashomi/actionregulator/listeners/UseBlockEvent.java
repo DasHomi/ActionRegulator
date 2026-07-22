@@ -32,6 +32,8 @@ public class UseBlockEvent {
 
                 if (FilterUtils.doesNotMatchBlockFilter(rule, targetBlockId, world.getBlockState(blockHitResult.getBlockPos()))) continue;
 
+                if (FilterUtils.doesNotMatchBlockConditions(rule, world.getBlockState(blockHitResult.getBlockPos()))) continue;
+
                 RuleAppliedNotification.sendNotification(player, rule);
 
                 return InteractionResult.FAIL;

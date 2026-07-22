@@ -25,6 +25,11 @@
   "actionregulator.ui.section.targetEntities": "Target Entities",
   "actionregulator.ui.section.playerConditions": "Player Conditions",
 
+  "actionregulator.ui.blockConditions.waterlogged": "Waterlogged:",
+  "actionregulator.ui.blockConditions.mode.ignored": "Ignored",
+  "actionregulator.ui.blockConditions.mode.required": "Required",
+  "actionregulator.ui.blockConditions.mode.forbidden": "Forbidden",
+
   "actionregulator.ui.playerConditions.elytra": "Elytra Flying:",
   "actionregulator.ui.playerConditions.swimming": "Swimming:",
   "actionregulator.ui.playerConditions.mode.ignored": "Ignored",

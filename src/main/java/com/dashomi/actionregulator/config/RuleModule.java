@@ -16,6 +16,7 @@ public class RuleModule {
     public List<String> targetBlocks = new ArrayList<>();
     public List<String> targetBlockTags = new ArrayList<>();
     public boolean invertTargetBlocks = false;
+    public BlockConditionMode waterloggedCondition = BlockConditionMode.IGNORED;
 
     // hand item
     public List<String> handItems = new ArrayList<>();

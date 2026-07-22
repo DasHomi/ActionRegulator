@@ -2,6 +2,7 @@ package com.dashomi.actionregulator.utils;
 
 import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.enums.BlockConditionMode;
 import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class FilterUtils {
     public static boolean actionRegulatorIsNotDisabled() {
@@ -59,6 +61,21 @@ public class FilterUtils {
         if (mode == PlayerConditionMode.REQUIRED) return !state;
         if (mode == PlayerConditionMode.FORBIDDEN) return state;
         return false;
+    }
+
+    public static boolean doesNotMatchBlockConditions(RuleModule rule, BlockState blockState) {
+        return conditionFails(rule.waterloggedCondition, isWaterlogged(blockState));
+    }
+
+    private static boolean conditionFails(BlockConditionMode mode, boolean state) {
+        if (mode == BlockConditionMode.REQUIRED) return !state;
+        if (mode == BlockConditionMode.FORBIDDEN) return state;
+        return false;
+    }
+
+    private static boolean isWaterlogged(BlockState blockState) {
+        return blockState.hasProperty(BlockStateProperties.WATERLOGGED)
+                && blockState.getValue(BlockStateProperties.WATERLOGGED);
     }
 
     public static boolean doesNotMatchBlockFilter(RuleModule rule, String blockId, BlockState blockState) {
