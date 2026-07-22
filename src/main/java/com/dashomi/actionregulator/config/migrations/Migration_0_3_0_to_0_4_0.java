@@ -34,6 +34,8 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
 
                     ensureIgnored(rule, "elytraFlyingCondition");
                     ensureIgnored(rule, "swimmingCondition");
+
+                    ensureDefaultGameModes(rule);
                 }
             }
         }
@@ -43,6 +45,16 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
     private static void ensureIgnored(JsonObject rule, String fieldName) {
         if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
             rule.add(fieldName, new JsonPrimitive("IGNORED"));
+        }
+    }
+
+    private static void ensureDefaultGameModes(JsonObject rule) {
+        if (!rule.has("activeGameModes") || !rule.get("activeGameModes").isJsonArray()) {
+            JsonArray gameModes = new JsonArray();
+            gameModes.add("SURVIVAL");
+            gameModes.add("CREATIVE");
+            gameModes.add("ADVENTURE");
+            rule.add("activeGameModes", gameModes);
         }
     }
 

@@ -37,6 +37,7 @@ public class RuleModule {
     // player conditions
     public PlayerConditionMode elytraFlyingCondition = PlayerConditionMode.IGNORED;
     public PlayerConditionMode swimmingCondition = PlayerConditionMode.IGNORED;
+    public List<String> activeGameModes = new ArrayList<>(List.of("SURVIVAL", "CREATIVE", "ADVENTURE")); // set of enabled modes; empty = none
 
     public List<String> activeDimensions = new ArrayList<>(List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"));
     public String notificationMessage = "";

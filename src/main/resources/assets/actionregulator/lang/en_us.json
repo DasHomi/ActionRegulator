@@ -30,6 +30,11 @@
   "actionregulator.ui.playerConditions.mode.ignored": "Ignored",
   "actionregulator.ui.playerConditions.mode.required": "Required",
   "actionregulator.ui.playerConditions.mode.forbidden": "Forbidden",
+  "actionregulator.ui.playerConditions.gamemode": "Game Mode:",
+  "actionregulator.ui.playerConditions.gamemode.survival": "Survival",
+  "actionregulator.ui.playerConditions.gamemode.creative": "Creative",
+  "actionregulator.ui.playerConditions.gamemode.adventure": "Adventure",
+  "actionregulator.ui.playerConditions.gamemode.spectator": "Spectator",
 
   "actionregulator.ui.targetmode.blocks": "Blocks",
   "actionregulator.ui.targetmode.entities": "Entities",

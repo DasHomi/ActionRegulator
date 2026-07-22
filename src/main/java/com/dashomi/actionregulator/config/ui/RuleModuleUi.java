@@ -123,8 +123,7 @@ public class RuleModuleUi {
         body.child(sectionLabel("actionregulator.ui.section.dimensions", 0xFF4EA8DE).margins(Insets.top(4)));
         body.child(new DimensionPickerComponent(rule.activeDimensions).build());
 
-        body.child(sectionLabel("actionregulator.ui.section.playerConditions", 0xFF4EA8DE).margins(Insets.top(4)));
-        body.child(new PlayerConditionsSectionComponent(rule).build());
+        body.child(new PlayerConditionsSectionComponent(rule).build().margins(Insets.top(4)));
 
         body.child(sectionLabel("actionregulator.ui.section.notification", 0xFF4EA8DE).margins(Insets.top(4)));
 

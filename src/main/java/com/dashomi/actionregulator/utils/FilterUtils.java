@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -20,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class FilterUtils {
@@ -29,7 +32,18 @@ public class FilterUtils {
 
     public static boolean doesNotMatchPlayerConditions(RuleModule rule, Player player) {
         return conditionFails(rule.elytraFlyingCondition, player.isFallFlying())
-                || conditionFails(rule.swimmingCondition, player.isSwimming());
+                || conditionFails(rule.swimmingCondition, player.isSwimming())
+                || doesNotMatchGameMode(rule);
+    }
+
+    private static boolean doesNotMatchGameMode(RuleModule rule) {
+        List<String> selected = Objects.requireNonNullElse(rule.activeGameModes, List.of());
+        MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
+        if (gameMode == null) {
+            return true;
+        }
+        GameType currentMode = gameMode.getPlayerMode();
+        return !selected.contains(currentMode.name());
     }
 
     private static boolean conditionFails(PlayerConditionMode mode, boolean state) {

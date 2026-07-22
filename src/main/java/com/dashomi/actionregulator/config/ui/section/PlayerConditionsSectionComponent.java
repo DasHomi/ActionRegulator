@@ -6,11 +6,14 @@ import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.UIContainers;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
+import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.GameType;
 
 public class PlayerConditionsSectionComponent {
 
@@ -26,20 +29,42 @@ public class PlayerConditionsSectionComponent {
     }
 
     public FlowLayout build() {
-        FlowLayout section = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
-        section.gap(4);
+        FlowLayout content = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
+        content.gap(4);
+        content.padding(Insets.of(4, 4, 6, 4));
+        content.surface(Surface.flat(0x22FFFFFF));
 
-        section.child(buildConditionRow(
+        content.child(buildConditionRow(
                 "actionregulator.ui.playerConditions.elytra",
                 () -> rule.elytraFlyingCondition,
                 v -> rule.elytraFlyingCondition = v));
 
-        section.child(buildConditionRow(
+        content.child(buildConditionRow(
                 "actionregulator.ui.playerConditions.swimming",
                 () -> rule.swimmingCondition,
                 v -> rule.swimmingCondition = v));
 
-        return section;
+        content.child(buildGameModeRow());
+
+        boolean[] open = { false };
+        content.sizing(Sizing.fill(100), Sizing.fixed(0));
+
+        Component title = Component.translatable("actionregulator.ui.section.playerConditions");
+        ButtonComponent toggle = UIComponents.button(
+                Component.literal("▶ ").append(title),
+                b -> {
+                    open[0] = !open[0];
+                    b.setMessage(Component.literal(open[0] ? "▼ " : "▶ ").append(title));
+                    content.sizing(Sizing.fill(100), open[0] ? Sizing.content() : Sizing.fixed(0));
+                });
+        toggle.sizing(Sizing.fill(100), Sizing.fixed(14));
+        toggle.renderer(ButtonComponent.Renderer.flat(0xFF333333, 0xFF444444, 0xFF222222));
+
+        FlowLayout wrapper = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
+        wrapper.gap(2);
+        wrapper.child(toggle);
+        wrapper.child(content);
+        return wrapper;
     }
 
     private FlowLayout buildConditionRow(
@@ -71,6 +96,40 @@ public class PlayerConditionsSectionComponent {
         }
 
         return row;
+    }
+
+    private FlowLayout buildGameModeRow() {
+        FlowLayout row = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        row.verticalAlignment(VerticalAlignment.CENTER);
+        row.gap(4);
+        row.child(UIComponents.label(Component.translatable("actionregulator.ui.playerConditions.gamemode"))
+                .sizing(Sizing.content(), Sizing.content()));
+
+        for (GameType mode : GameType.values()) {
+            final String id = mode.name();
+            ButtonComponent btn = UIComponents.button(Component.translatable(getGameModeLabelKey(mode)), b -> {
+                if (rule.activeGameModes.contains(id)) {
+                    rule.activeGameModes.remove(id);
+                } else {
+                    rule.activeGameModes.add(id);
+                }
+                b.renderer(rule.activeGameModes.contains(id) ? MODE_ON : MODE_OFF);
+            });
+            btn.sizing(Sizing.content(), Sizing.fixed(14));
+            btn.renderer(rule.activeGameModes.contains(id) ? MODE_ON : MODE_OFF);
+            row.child(btn);
+        }
+
+        return row;
+    }
+
+    private String getGameModeLabelKey(GameType mode) {
+        return switch (mode) {
+            case SURVIVAL -> "actionregulator.ui.playerConditions.gamemode.survival";
+            case CREATIVE -> "actionregulator.ui.playerConditions.gamemode.creative";
+            case ADVENTURE -> "actionregulator.ui.playerConditions.gamemode.adventure";
+            case SPECTATOR -> "actionregulator.ui.playerConditions.gamemode.spectator";
+        };
     }
 
     private String getModeLabelKey(PlayerConditionMode mode) {
