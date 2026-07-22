@@ -15,7 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class UseBlockEvent {
     public static InteractionResult useBlockListener(Player player, Level world, InteractionHand hand, BlockHitResult blockHitResult) {
-        if (!player.isSpectator() && FilterUtils.actionRegulatorIsNotDisabled()) {
+        if (FilterUtils.actionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
             String targetBlockId = RegistryStringCreator.getBlockId(world, blockHitResult.getBlockPos());
 

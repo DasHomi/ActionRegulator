@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 
 public class AttackEntityEvent {
     public static InteractionResult attackEntityListener(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult result) {
-        if (!player.isSpectator() && FilterUtils.actionRegulatorIsNotDisabled()) {
+        if (FilterUtils.actionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {

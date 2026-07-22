@@ -35,6 +35,11 @@
   "actionregulator.ui.playerConditions.gamemode.creative": "Creative",
   "actionregulator.ui.playerConditions.gamemode.adventure": "Adventure",
   "actionregulator.ui.playerConditions.gamemode.spectator": "Spectator",
+  "actionregulator.ui.playerConditions.health": "Health (hearts):",
+  "actionregulator.ui.playerConditions.hunger": "Hunger:",
+  "actionregulator.ui.playerConditions.threshold.ignored": "Ignored",
+  "actionregulator.ui.playerConditions.threshold.above": "Above",
+  "actionregulator.ui.playerConditions.threshold.below": "Below",
 
   "actionregulator.ui.targetmode.blocks": "Blocks",
   "actionregulator.ui.targetmode.entities": "Entities",

@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 public class AttackBlockEvent {
     public static InteractionResult attackBlockListener(Player player, Level world, InteractionHand hand, BlockPos blockPos, Direction direction) {
-        if (!player.isSpectator() && FilterUtils.actionRegulatorIsNotDisabled()) {
+        if (FilterUtils.actionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
             String targetBlockId = RegistryStringCreator.getBlockId(world, blockPos);
 

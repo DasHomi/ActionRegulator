@@ -35,6 +35,11 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
                     ensureIgnored(rule, "elytraFlyingCondition");
                     ensureIgnored(rule, "swimmingCondition");
 
+                    ensureIgnored(rule, "healthConditionMode");
+                    ensureIgnored(rule, "hungerConditionMode");
+                    ensureThreshold(rule, "healthThreshold");
+                    ensureThreshold(rule, "hungerThreshold");
+
                     ensureDefaultGameModes(rule);
                 }
             }
@@ -45,6 +50,12 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
     private static void ensureIgnored(JsonObject rule, String fieldName) {
         if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
             rule.add(fieldName, new JsonPrimitive("IGNORED"));
+        }
+    }
+
+    private static void ensureThreshold(JsonObject rule, String fieldName) {
+        if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
+            rule.add(fieldName, new JsonPrimitive(-1));
         }
     }
 

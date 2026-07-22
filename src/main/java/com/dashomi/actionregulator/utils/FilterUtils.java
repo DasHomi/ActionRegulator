@@ -6,6 +6,7 @@ import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
 import com.dashomi.actionregulator.enums.PlayerConditionMode;
+import com.dashomi.actionregulator.enums.ThresholdMode;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -33,7 +34,15 @@ public class FilterUtils {
     public static boolean doesNotMatchPlayerConditions(RuleModule rule, Player player) {
         return conditionFails(rule.elytraFlyingCondition, player.isFallFlying())
                 || conditionFails(rule.swimmingCondition, player.isSwimming())
-                || doesNotMatchGameMode(rule);
+                || doesNotMatchGameMode(rule)
+                || thresholdFails(rule.healthConditionMode, rule.healthThreshold, player.getHealth() / 2f)
+                || thresholdFails(rule.hungerConditionMode, rule.hungerThreshold, player.getFoodData().getFoodLevel());
+    }
+
+    private static boolean thresholdFails(ThresholdMode mode, float threshold, float value) {
+        if (mode == ThresholdMode.IGNORED || threshold < 0) return false;
+        if (mode == ThresholdMode.ABOVE) return value < threshold;
+        return value > threshold;
     }
 
     private static boolean doesNotMatchGameMode(RuleModule rule) {

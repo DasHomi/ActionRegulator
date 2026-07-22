@@ -46,11 +46,17 @@ To make your rules even more precise, registry lists support subconditions.
 
 ### Additional Rule Options
 - **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
-- **Player Conditions:** Restrict rules to the player's current state. Currently **Elytra Flying** and
-  **Swimming**, each with three modes:
-    - **Ignored:** The state does not affect the rule.
-    - **Required:** The rule only applies while the state is active (e.g. block attacks *only* while flying).
-    - **Forbidden:** The rule only applies while the state is inactive.
+- **Player Conditions:** Restrict rules to the player's current state:
+    - **Elytra Flying** and **Swimming**, each with three modes:
+        - **Ignored:** The state does not affect the rule.
+        - **Required:** The rule only applies while the state is active (e.g. block attacks *only* while flying).
+        - **Forbidden:** The rule only applies while the state is inactive.
+    - **Game Mode:** Select which game modes (Survival, Creative, Adventure, Spectator) the rule applies in.
+      The rule only applies while in one of the selected modes.
+    - **Health** (in hearts) and **Hunger** (food points), each with three modes:
+        - **Ignored:** The value does not affect the rule.
+        - **Above:** The rule only applies while at or above the threshold.
+        - **Below:** The rule only applies while at or below the threshold.
 - **Notifications:** Customize how and if you want to be notified when an action is blocked.
 
 ### Additional Options
@@ -63,10 +69,8 @@ Rules can be individually exported and imported as JSON files. This makes it inc
 
 ## Future Plans
 Action Regulator is still in very early development and there are many features and improvements already planned for future versions. Here are some of the most important ones which may or may not come in the future:
-- Support for Item/Block/Entity Tags to select multiple items/blocks/entities at once (e.g., all types of wood).
 - More subconditions for even more precise rules (e.g., item enchantments, target block state, etc.).
-- Player conditions (e.g., Health, Hunger, Status Effects, Swimming, etc.).
-- Improved custom name matching (e.g., RegEx support).
+- More player conditions (e.g., Status Effects).
 - Improved notification system (e.g., templates for block names, Minecraft text formatting, etc.).
 
 If you have any suggestions for features or improvements, feel free to open a feature request issue!
