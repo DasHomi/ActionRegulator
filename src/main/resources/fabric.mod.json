@@ -24,11 +24,11 @@
     "actionregulator.client.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.18.4",
-    "fabric-api": ">=0.144.0",
+    "fabricloader": ">=0.19.3",
+    "fabric-api": ">=0.145.1",
     "minecraft": ">=26.1",
-    "owo": ">=0.13",
-    "modmenu": ">=18.0.0-0"
+    "owo": ">=0.13.0",
+    "modmenu": ">=18.0.0-alpha.8"
   },
   "custom": {
     "modmenu": {

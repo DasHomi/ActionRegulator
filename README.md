@@ -17,8 +17,11 @@ Currently, there are two primary **Triggers**:
 - **Attack** (Left-clicking)
 - **Use** (Right-clicking)
 
-Each trigger allows you to configure registry lists for your **Hand Items** and either **Target Entities** or **Target Blocks**.
+Each rule targets either **Blocks** or **Entities**, and can additionally filter on the item in your hand.
 You can also select Item/Block/Entity tags to select multiple items/blocks/entities at once (e.g., all types of wood).
+
+> [!NOTE]
+> A **Use** rule that has no target blocks or entities listed also blocks consuming items (food, potions, ...)
 
 You can toggle the behavior of these lists between **Default** and **Inverted**:
 
@@ -31,8 +34,9 @@ You can toggle the behavior of these lists between **Default** and **Inverted**:
 To make your rules even more precise, registry lists support subconditions.
 
 **Hand Item Subconditions:**
-- **Hand Selection:** Choose between Any, Mainhand, or Offhand.
-- **Durability:** Chose above or below a certain durability threshold.
+- **Hand:** Choose between Both, Mainhand, or Offhand.
+- **Durability:** Chose above or below a certain threshold of *remaining* durability. Items that cannot take
+  damage are not affected by this condition.
 - **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
 - **Custom Name Filter** 
   - **Mode → Filter:** Specify text the item name must contain.
@@ -54,8 +58,8 @@ To make your rules even more precise, registry lists support subconditions.
 **Target Entity Subconditions:**
 - **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
 - **Custom Name Filter**
-    - **Mode → Filter:** Specify text the item name must contain.
-    - **Mode → Regex Filter:** Specify a regular expression the item name must match.
+    - **Mode → Filter:** Specify text the entity name must contain.
+    - **Mode → Regex Filter:** Specify a regular expression the entity name must match.
 
 **Target Block Subconditions:**
 - **Waterlogged:** Restrict the rule based on whether the target block is waterlogged, with three modes:
@@ -64,7 +68,8 @@ To make your rules even more precise, registry lists support subconditions.
     - **Forbidden:** The rule only applies while the target block is not waterlogged.
 
 ### Additional Rule Options
-- **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether).
+- **Dimension Selector:** Restrict rules to specific dimensions (e.g. only active in the Nether). A rule with no
+  dimension selected never applies anywhere.
 - **Player Conditions:** Restrict rules to the player's current state:
     - **Elytra Flying** and **Swimming**, each with three modes:
         - **Ignored:** The state does not affect the rule.
@@ -76,7 +81,8 @@ To make your rules even more precise, registry lists support subconditions.
         - **Ignored:** The value does not affect the rule.
         - **Above:** The rule only applies while at or above the threshold.
         - **Below:** The rule only applies while at or below the threshold.
-- **Notifications:** Customize how and if you want to be notified when an action is blocked.
+- **Notifications:** Get told when a rule blocked something — either by a **Sound**, a red **Symbol** above the
+  hotbar, or your own **Text** in that same spot. Of course it can also stay **Off**.
 
 ### Additional Options
 - **Global Override Hotkey:** Hold down the override hotkey (Default: `Right Alt`) to temporarily deactivate all Action Regulator rules.
@@ -88,7 +94,6 @@ Rules can be individually exported and imported as JSON files. This makes it inc
 
 ## Future Plans
 Action Regulator is still in very early development and there are many features and improvements already planned for future versions. Here are some of the most important ones which may or may not come in the future:
-- More subconditions for even more precise rules (e.g., item enchantments, target block state, etc.).
 - More player conditions (e.g., Status Effects).
 - Improved notification system (e.g., templates for block names, Minecraft text formatting, etc.).
 
