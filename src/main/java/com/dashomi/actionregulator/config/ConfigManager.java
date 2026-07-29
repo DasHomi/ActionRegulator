@@ -1,7 +1,6 @@
 package com.dashomi.actionregulator.config;
 
 import com.dashomi.actionregulator.ActionregulatorClient;
-import com.dashomi.actionregulator.config.migrations.ConfigMigration;
 import com.dashomi.actionregulator.config.migrations.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -174,8 +174,4 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
         container.child(new RegistryPickerComponent(
                 rule.handItemEnchantments, allEnchantments, "enchantment").build());
     }
-
-    private static String toTagSelector(String rawTag) {
-        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
-    }
 }

@@ -43,8 +43,4 @@ public class TargetBlocksSectionComponent extends RegistrySectionComponent {
 
         if (dropdown != null) section.child(dropdown);
     }
-
-    private static String toTagSelector(String rawTag) {
-        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
-    }
 }

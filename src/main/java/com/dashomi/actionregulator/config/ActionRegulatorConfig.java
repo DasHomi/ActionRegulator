@@ -17,11 +17,6 @@ public class ActionRegulatorConfig {
         return INSTANCE;
     }
 
-    public static ActionRegulatorConfig reload() {
-        INSTANCE = ConfigManager.load();
-        return INSTANCE;
-    }
-
     public void save() {
         ConfigManager.save(this);
     }

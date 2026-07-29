@@ -44,18 +44,6 @@ public abstract class RegistrySectionComponent {
             Consumer<Boolean> invertSetter,
             List<String> selected,
             List<String> allEntries,
-            String registryType
-    ) {
-        this(labelKey, topMargin, invertGetter, invertSetter, selected, allEntries, registryType, null, null, null);
-    }
-
-    protected RegistrySectionComponent(
-            String labelKey,
-            int topMargin,
-            BooleanSupplier invertGetter,
-            Consumer<Boolean> invertSetter,
-            List<String> selected,
-            List<String> allEntries,
             String registryType,
             List<String> selectedTags,
             List<String> allTagEntries,
@@ -81,10 +69,8 @@ public abstract class RegistrySectionComponent {
         section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.ids")));
         section.child(new RegistryPickerComponent(selected, allEntries, registryType).build());
 
-        if (selectedTags != null && allTagEntries != null && tagRegistryType != null) {
-            section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.tags")));
-            section.child(new RegistryPickerComponent(selectedTags, allTagEntries, tagRegistryType).build());
-        }
+        section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.tags")));
+        section.child(new RegistryPickerComponent(selectedTags, allTagEntries, tagRegistryType).build());
 
         buildExtraDropdowns(section);
 
@@ -209,5 +195,9 @@ public abstract class RegistrySectionComponent {
 
     private static String invertLabelKey(boolean on) {
         return on ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off";
+    }
+
+    protected static String toTagSelector(String rawTag) {
+        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
     }
 }

@@ -114,9 +114,11 @@ public class RegistryPickerComponent {
         if (Language.getInstance().has(key)) {
             return key;
         }
-        if (registryType.equals("item") || registryType.equals("block")) {
+        // items and blocks share ids (e.g. minecraft:stone), so fall back to the other registry's key
+        if (registryType.equals("item")) {
             String blockKey = "block." + id.replace(":", ".");
             if (Language.getInstance().has(blockKey)) return blockKey;
+        } else if (registryType.equals("block")) {
             String itemKey = "item." + id.replace(":", ".");
             if (Language.getInstance().has(itemKey)) return itemKey;
         }

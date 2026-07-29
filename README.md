@@ -49,11 +49,6 @@ To make your rules even more precise, registry lists support subconditions.
         - **Required:** The rule only applies while the item has at least one enchantment.
         - **Forbidden:** The rule only applies while the item has no enchantments.
 
-  > [!NOTE]
-  > The enchantment list can only be browsed while you are in a world, because enchantments are provided by
-  > the server's data packs. Entries you already picked stay selected everywhere.
-  > Enchanted books obtained normally are **not** matched — they merely *store* their enchantments rather
-  > than having them applied.
 
 **Target Entity Subconditions:**
 - **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.
@@ -81,7 +76,7 @@ To make your rules even more precise, registry lists support subconditions.
         - **Ignored:** The value does not affect the rule.
         - **Above:** The rule only applies while at or above the threshold.
         - **Below:** The rule only applies while at or below the threshold.
-- **Notifications:** Get told when a rule blocked something — either by a **Sound**, a red **Symbol** above the
+- **Notifications:** Get told when a rule blocked something. Either by a **Sound**, a red **Symbol** above the
   hotbar, or your own **Text** in that same spot. Of course it can also stay **Off**.
 
 ### Additional Options

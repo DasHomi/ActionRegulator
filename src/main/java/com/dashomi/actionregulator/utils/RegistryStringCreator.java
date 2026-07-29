@@ -3,7 +3,6 @@ package com.dashomi.actionregulator.utils;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,10 +22,6 @@ public class RegistryStringCreator {
     public static String getItemId(Player player, InteractionHand hand) {
         ItemStack handItem = player.getItemInHand(hand);
         return BuiltInRegistries.ITEM.getKey(handItem.getItem()).toString();
-    }
-
-    public static String getBlockId(Level world, BlockPos blockPos) {
-        return getBlockId(world.getBlockState(blockPos));
     }
 
     public static String getBlockId(BlockState blockState) {
