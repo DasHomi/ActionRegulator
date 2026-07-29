@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 public class UseItemEvent {
     public static InteractionResult useItemListener(Player player, Level world, InteractionHand hand) {
-        if (!player.isSpectator() && FilterUtils.actionRegulatorIsNotDisabled()) {
+        if (FilterUtils.actionRegulatorIsNotDisabled()) {
             String currentDimension = RegistryStringCreator.getDimensionId(world);
 
             for (RuleModule rule : ActionRegulatorConfig.get().rules) {
@@ -24,11 +24,13 @@ public class UseItemEvent {
 
                 if (rule.activeDimensions.isEmpty() || !rule.activeDimensions.contains(currentDimension)) continue;
 
+                if (FilterUtils.doesNotMatchPlayerConditions(rule, player)) continue;
+
                 if (FilterUtils.doesNotMatchHandItemFilter(rule, player, hand)) continue;
 
                 boolean activeTargetSet = rule.targetMode == TargetMode.BLOCKS
-                        ? !rule.targetBlocks.isEmpty()
-                        : !rule.targetEntities.isEmpty();
+                        ? !rule.targetBlocks.isEmpty() || !rule.targetBlockTags.isEmpty()
+                        : !rule.targetEntities.isEmpty() || !rule.targetEntityTypeTags.isEmpty();
                 if (activeTargetSet) continue;
 
                 ItemStack stack = player.getItemInHand(hand);

@@ -1,7 +1,6 @@
 package com.dashomi.actionregulator.config;
 
 import com.dashomi.actionregulator.ActionregulatorClient;
-import com.dashomi.actionregulator.config.migrations.ConfigMigration;
 import com.dashomi.actionregulator.config.migrations.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,7 +23,8 @@ public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final List<ConfigMigration> MIGRATIONS = List.of(
             new Migration_0_1_0_to_0_2_0(),
-            new Migration_0_2_0_to_0_3_0()
+            new Migration_0_2_0_to_0_3_0(),
+            new Migration_0_3_0_to_0_4_0()
     );
 
     public static Path exportRule(RuleModule rule) throws IOException {
@@ -72,7 +72,9 @@ public class ConfigManager {
             List<RuleModule> importedRules = new ArrayList<>();
             JsonArray migratedRules = wrapper.getAsJsonArray("rules");
             for (JsonElement ruleElement : migratedRules) {
-                importedRules.add(GSON.fromJson(ruleElement, RuleModule.class));
+                RuleModule imported = GSON.fromJson(ruleElement, RuleModule.class);
+                normalizeRuleLists(imported);
+                importedRules.add(imported);
             }
             return importedRules;
         }
@@ -142,6 +144,11 @@ public class ConfigManager {
             applyMigrations(json);
 
             ActionRegulatorConfig config = GSON.fromJson(json, ActionRegulatorConfig.class);
+            if (config.rules != null) {
+                for (RuleModule rule : config.rules) {
+                    normalizeRuleLists(rule);
+                }
+            }
 
             config.configVersion = ActionregulatorClient.MOD_VERSION;
             save(config);
@@ -156,6 +163,13 @@ public class ConfigManager {
 
     public static void save(ActionRegulatorConfig config) {
         config.configVersion = ActionregulatorClient.MOD_VERSION;
+        if (config.rules == null) {
+            config.rules = new ArrayList<>();
+        } else {
+            for (RuleModule rule : config.rules) {
+                normalizeRuleLists(rule);
+            }
+        }
         Path configPath = getConfigPath();
 
         try {
@@ -237,5 +251,19 @@ public class ConfigManager {
             if (numA != numB) return numA - numB;
         }
         return 0;
+    }
+
+    private static void normalizeRuleLists(RuleModule rule) {
+        if (rule == null) {
+            return;
+        }
+
+        if (rule.targetBlocks == null) rule.targetBlocks = new ArrayList<>();
+        if (rule.handItems == null) rule.handItems = new ArrayList<>();
+        if (rule.targetEntities == null) rule.targetEntities = new ArrayList<>();
+
+        if (rule.targetBlockTags == null) rule.targetBlockTags = new ArrayList<>();
+        if (rule.handItemTags == null) rule.handItemTags = new ArrayList<>();
+        if (rule.targetEntityTypeTags == null) rule.targetEntityTypeTags = new ArrayList<>();
     }
 }

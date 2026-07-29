@@ -23,6 +23,10 @@ public class RegistryPickerComponent {
         this.selected = selected;
         this.allEntries = allEntries;
         this.registryType = registryType;
+
+        if (registryType.endsWith("_tag")) {
+            normalizeSelectedTags();
+        }
     }
 
     public FlowLayout build() {
@@ -103,13 +107,18 @@ public class RegistryPickerComponent {
     }
 
     private String translationKey(String id) {
+        if (registryType.endsWith("_tag")) {
+            return id;
+        }
         String key = registryType + "." + id.replace(":", ".");
         if (Language.getInstance().has(key)) {
             return key;
         }
-        if (registryType.equals("item") || registryType.equals("block")) {
+        // items and blocks share ids (e.g. minecraft:stone), so fall back to the other registry's key
+        if (registryType.equals("item")) {
             String blockKey = "block." + id.replace(":", ".");
             if (Language.getInstance().has(blockKey)) return blockKey;
+        } else if (registryType.equals("block")) {
             String itemKey = "item." + id.replace(":", ".");
             if (Language.getInstance().has(itemKey)) return itemKey;
         }
@@ -117,7 +126,37 @@ public class RegistryPickerComponent {
     }
 
     private Component resolvedComponent(String id) {
+        if (registryType.endsWith("_tag")) {
+            return Component.literal(normalizeTagSelector(id));
+        }
         String key = translationKey(id);
         return Component.translatable(key);
+    }
+
+    private void normalizeSelectedTags() {
+        List<String> normalized = new ArrayList<>();
+        for (String entry : selected) {
+            String value = normalizeTagSelector(entry);
+            if (!value.isBlank() && !normalized.contains(value)) {
+                normalized.add(value);
+            }
+        }
+        selected.clear();
+        selected.addAll(normalized);
+    }
+
+    private String normalizeTagSelector(String rawTag) {
+        if (rawTag == null) {
+            return "";
+        }
+
+        String tag = rawTag.trim();
+        if (tag.startsWith("#")) {
+            tag = tag.substring(1);
+        }
+        if (tag.startsWith("minecraft:")) {
+            tag = tag.substring("minecraft:".length());
+        }
+        return tag;
     }
 }

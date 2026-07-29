@@ -2,27 +2,91 @@ package com.dashomi.actionregulator.utils;
 
 import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.enums.ConditionMode;
 import com.dashomi.actionregulator.enums.CustomNameMode;
+import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
+import com.dashomi.actionregulator.enums.ThresholdMode;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class FilterUtils {
     public static boolean actionRegulatorIsNotDisabled() {
         return !ActionregulatorClient.isTemporaryOverrideActive();
     }
 
-    public static boolean doesNotMatchFilter(List<String> list, boolean invert, String id) {
-        if (!invert) {
-            return !list.isEmpty() && !list.contains(id);
-        } else {
-            return list.isEmpty() || list.contains(id);
+    public static boolean doesNotMatchPlayerConditions(RuleModule rule, Player player) {
+        return conditionFails(rule.elytraFlyingCondition, player.isFallFlying())
+                || conditionFails(rule.swimmingCondition, player.isSwimming())
+                || doesNotMatchGameMode(rule)
+                || thresholdFails(rule.healthConditionMode, rule.healthThreshold, player.getHealth() / 2f)
+                || thresholdFails(rule.hungerConditionMode, rule.hungerThreshold, player.getFoodData().getFoodLevel());
+    }
+
+    private static boolean thresholdFails(ThresholdMode mode, float threshold, float value) {
+        if (mode == ThresholdMode.IGNORED || threshold < 0) return false;
+        if (mode == ThresholdMode.ABOVE) return value < threshold;
+        return value > threshold;
+    }
+
+    private static boolean doesNotMatchGameMode(RuleModule rule) {
+        List<String> selected = Objects.requireNonNullElse(rule.activeGameModes, List.of());
+        MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
+        if (gameMode == null) {
+            return true;
         }
+        GameType currentMode = gameMode.getPlayerMode();
+        return !selected.contains(currentMode.name());
+    }
+
+    private static boolean conditionFails(ConditionMode mode, boolean state) {
+        if (mode == ConditionMode.REQUIRED) return !state;
+        if (mode == ConditionMode.FORBIDDEN) return state;
+        return false;
+    }
+
+    public static boolean doesNotMatchBlockConditions(RuleModule rule, BlockState blockState) {
+        return conditionFails(rule.waterloggedCondition, isWaterlogged(blockState));
+    }
+
+    private static boolean isWaterlogged(BlockState blockState) {
+        return blockState.hasProperty(BlockStateProperties.WATERLOGGED)
+                && blockState.getValue(BlockStateProperties.WATERLOGGED);
+    }
+
+    public static boolean doesNotMatchBlockFilter(RuleModule rule, String blockId, BlockState blockState) {
+        return doesNotMatchFilter(
+                rule.targetBlocks,
+                rule.targetBlockTags,
+                rule.invertTargetBlocks,
+                blockId,
+                tagId -> {
+                    Identifier parsed = parseTagId(tagId);
+                    return parsed != null && blockState.is(TagKey.create(Registries.BLOCK, parsed));
+                }
+        );
     }
 
     public static boolean doesNotMatchHandItemFilter(RuleModule rule, Player player, InteractionHand hand) {
@@ -36,7 +100,19 @@ public class FilterUtils {
         String handItemId = RegistryStringCreator.getItemId(player, hand);
         ItemStack handItem = player.getItemInHand(hand);
 
-        if (doesNotMatchFilter(rule.handItems, rule.invertHandItems, handItemId)) {
+        if (doesNotMatchFilter(
+                rule.handItems,
+                rule.handItemTags,
+                rule.invertHandItems,
+                handItemId,
+                tagId -> {
+                    Identifier parsed = parseTagId(tagId);
+                    return parsed != null && handItem.is(TagKey.create(Registries.ITEM, parsed));
+                })) {
+            return true;
+        }
+
+        if (doesNotMatchHandItemEnchantments(rule, handItem)) {
             return true;
         }
 
@@ -48,10 +124,18 @@ public class FilterUtils {
             return true;
         }
 
-        if (rule.handItemDurabilityThreshold >= 0 && handItem.isDamageableItem()) {
+        if (rule.handItemDurabilityMode != HandItemDurabilityMode.IGNORED
+                && rule.handItemDurabilityThreshold >= 0
+                && handItem.isDamageableItem()) {
             int remainingDurability = handItem.getMaxDamage() - handItem.getDamageValue();
-            if (remainingDurability > rule.handItemDurabilityThreshold) {
-                return true;
+            if (rule.handItemDurabilityMode == HandItemDurabilityMode.ABOVE) {
+                if (remainingDurability < rule.handItemDurabilityThreshold) {
+                    return true;
+                }
+            } else if (rule.handItemDurabilityMode == HandItemDurabilityMode.BELOW) {
+                if (remainingDurability > rule.handItemDurabilityThreshold) {
+                    return true;
+                }
             }
         }
 
@@ -63,12 +147,46 @@ public class FilterUtils {
             }
         }
 
+        if (rule.handItemCustomNameMode == CustomNameMode.REGEX_FILTER) {
+            String customNameFilter = rule.handItemCustomNameFilter == null ? "" : rule.handItemCustomNameFilter.trim();
+            if (customNameFilter.isEmpty()) return true;
+            String itemName = handItem.getHoverName().getString();
+            return !matchesRegex(itemName, customNameFilter);
+        }
+
         return false;
+    }
+
+    private static boolean doesNotMatchHandItemEnchantments(RuleModule rule, ItemStack handItem) {
+        ItemEnchantments enchantments = handItem.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+        if (conditionFails(rule.handItemEnchantedCondition, !enchantments.isEmpty())) {
+            return true;
+        }
+
+        Set<String> presentEnchantments = new HashSet<>();
+        for (Holder<Enchantment> holder : enchantments.keySet()) {
+            holder.unwrapKey().ifPresent(key -> presentEnchantments.add(key.identifier().toString()));
+        }
+
+        return doesNotMatchSetFilter(
+                rule.handItemEnchantments,
+                rule.invertHandItemEnchantments,
+                presentEnchantments
+        );
     }
 
     public static boolean doesNotMatchTargetEntityFilter(RuleModule rule, Entity entity) {
         String targetEntityId = RegistryStringCreator.getEntityId(entity);
-        if (doesNotMatchFilter(rule.targetEntities, rule.invertTargetEntities, targetEntityId)) {
+        if (doesNotMatchFilter(
+                rule.targetEntities,
+                rule.targetEntityTypeTags,
+                rule.invertTargetEntities,
+                targetEntityId,
+                tagId -> {
+                    Identifier parsed = parseTagId(tagId);
+                    return parsed != null && entity.getType().builtInRegistryHolder().is(TagKey.create(Registries.ENTITY_TYPE, parsed));
+                })) {
             return true;
         }
 
@@ -88,6 +206,90 @@ public class FilterUtils {
             }
         }
 
+        if (rule.targetEntityCustomNameMode == CustomNameMode.REGEX_FILTER) {
+            String customNameFilter = rule.targetEntityCustomNameFilter == null ? "" : rule.targetEntityCustomNameFilter.trim();
+            if (customNameFilter.isEmpty()) return true;
+            String entityName = entity.getName().getString();
+            return !matchesRegex(entityName, customNameFilter);
+        }
+
         return false;
+    }
+
+    private static boolean matchesRegex(String value, String regex) {
+        try {
+            return Pattern.compile(regex).matcher(value).find();
+        } catch (PatternSyntaxException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean doesNotMatchFilter(
+            List<String> idList,
+            List<String> tagList,
+            boolean invert,
+            String id,
+            Predicate<String> tagMatcher
+    ) {
+        List<String> ids = Objects.requireNonNullElse(idList, List.of());
+        List<String> tags = Objects.requireNonNullElse(tagList, List.of());
+
+        boolean hasAnySelector = !ids.isEmpty() || !tags.isEmpty();
+        boolean idMatch = ids.contains(id);
+        boolean tagMatch = tags.stream().anyMatch(tagMatcher);
+        boolean anyMatch = idMatch || tagMatch;
+
+        if (!invert) {
+            return hasAnySelector && !anyMatch;
+        } else {
+            return !hasAnySelector || anyMatch;
+        }
+    }
+
+    private static boolean doesNotMatchSetFilter(
+            List<String> idList,
+            boolean invert,
+            Set<String> presentIds
+    ) {
+        List<String> ids = Objects.requireNonNullElse(idList, List.of());
+
+        boolean hasAnySelector = !ids.isEmpty();
+        boolean matched = ids.stream().anyMatch(presentIds::contains);
+
+        if (!invert) {
+            return hasAnySelector && !matched;
+        } else {
+            return !hasAnySelector || matched;
+        }
+    }
+
+    private static Identifier parseTagId(String rawTagId) {
+        String tagId = rawTagId == null ? "" : rawTagId.trim();
+        if (tagId.startsWith("#")) {
+            tagId = tagId.substring(1);
+        }
+
+        if (tagId.isBlank()) {
+            return null;
+        }
+
+        if (!tagId.contains(":")) {
+            try {
+                return Identifier.fromNamespaceAndPath("minecraft", tagId);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+
+        int split = tagId.indexOf(':');
+        if (split <= 0 || split >= tagId.length() - 1) {
+            return null;
+        }
+
+        try {
+            return Identifier.fromNamespaceAndPath(tagId.substring(0, split), tagId.substring(split + 1));
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }

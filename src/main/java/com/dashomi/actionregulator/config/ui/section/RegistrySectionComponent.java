@@ -1,5 +1,6 @@
 package com.dashomi.actionregulator.config.ui.section;
 
+import com.dashomi.actionregulator.config.ui.ConditionRowComponent;
 import com.dashomi.actionregulator.config.ui.RegistryPickerComponent;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
@@ -17,10 +18,8 @@ import io.wispforest.owo.ui.component.TextBoxComponent;
 
 public abstract class RegistrySectionComponent {
 
-    protected static final ButtonComponent.Renderer MODE_ON =
-            ButtonComponent.Renderer.flat(0xFF2255AA, 0xFF3366CC, 0xFF1A4488);
-    protected static final ButtonComponent.Renderer MODE_OFF =
-            ButtonComponent.Renderer.flat(0xFF555555, 0xFF666666, 0xFF444444);
+    protected static final ButtonComponent.Renderer MODE_ON = ConditionRowComponent.MODE_ON;
+    protected static final ButtonComponent.Renderer MODE_OFF = ConditionRowComponent.MODE_OFF;
 
     private static final ButtonComponent.Renderer INVERT_ON =
             ButtonComponent.Renderer.flat(0xFF226622, 0xFF338833, 0xFF114411);
@@ -34,6 +33,9 @@ public abstract class RegistrySectionComponent {
     private final List<String> selected;
     private final List<String> allEntries;
     private final String registryType;
+    private final List<String> selectedTags;
+    private final List<String> allTagEntries;
+    private final String tagRegistryType;
 
     protected RegistrySectionComponent(
             String labelKey,
@@ -42,7 +44,10 @@ public abstract class RegistrySectionComponent {
             Consumer<Boolean> invertSetter,
             List<String> selected,
             List<String> allEntries,
-            String registryType
+            String registryType,
+            List<String> selectedTags,
+            List<String> allTagEntries,
+            String tagRegistryType
     ) {
         this.labelKey = labelKey;
         this.topMargin = topMargin;
@@ -51,6 +56,9 @@ public abstract class RegistrySectionComponent {
         this.selected = selected;
         this.allEntries = allEntries;
         this.registryType = registryType;
+        this.selectedTags = selectedTags;
+        this.allTagEntries = allTagEntries;
+        this.tagRegistryType = tagRegistryType;
     }
 
     public FlowLayout build() {
@@ -58,7 +66,11 @@ public abstract class RegistrySectionComponent {
         section.gap(4);
 
         section.child(buildHeader());
+        section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.ids")));
         section.child(new RegistryPickerComponent(selected, allEntries, registryType).build());
+
+        section.child(UIComponents.label(Component.translatable("actionregulator.ui.registry.tags")));
+        section.child(new RegistryPickerComponent(selectedTags, allTagEntries, tagRegistryType).build());
 
         buildExtraDropdowns(section);
 
@@ -67,7 +79,7 @@ public abstract class RegistrySectionComponent {
 
     protected void buildExtraDropdowns(FlowLayout section) { }
 
-    protected final FlowLayout buildDropdown(String title, Consumer<FlowLayout> filler) {
+    protected final FlowLayout buildDropdown(Component title, Consumer<FlowLayout> filler) {
         FlowLayout content = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         content.gap(4);
         content.padding(Insets.of(4, 4, 6, 4));
@@ -80,10 +92,10 @@ public abstract class RegistrySectionComponent {
         content.sizing(Sizing.fill(100), Sizing.fixed(0));
 
         ButtonComponent toggle = UIComponents.button(
-                Component.literal("▶ " + title),
+                Component.literal("▶ ").append(title),
                 b -> {
                     open[0] = !open[0];
-                    b.setMessage(Component.literal((open[0] ? "▼ " : "▶ ") + title));
+                    b.setMessage(Component.literal(open[0] ? "▼ " : "▶ ").append(title));
                     content.sizing(Sizing.fill(100), open[0] ? Sizing.content() : Sizing.fixed(0));
                 });
         toggle.sizing(Sizing.fill(100), Sizing.fixed(14));
@@ -106,11 +118,6 @@ public abstract class RegistrySectionComponent {
                 .sizing(Sizing.content(), Sizing.content()));
 
         CustomNameMode[] modes = CustomNameMode.values();
-        String[] labelKeys = {
-                "actionregulator.ui.customName.filter",
-                "actionregulator.ui.customName.custom",
-                "actionregulator.ui.customName.default"
-        };
         ButtonComponent[] btns = new ButtonComponent[modes.length];
         FlowLayout nameRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         nameRow.verticalAlignment(VerticalAlignment.CENTER);
@@ -124,14 +131,15 @@ public abstract class RegistrySectionComponent {
         nameRow.child(nameInput);
 
         Runnable updateFilterRowVisibility = () -> {
-            boolean showFilter = getter.get() == CustomNameMode.FILTER;
+            CustomNameMode selectedMode = getter.get();
+            boolean showFilter = selectedMode == CustomNameMode.FILTER || selectedMode == CustomNameMode.REGEX_FILTER;
             nameRow.sizing(Sizing.fill(100), showFilter ? Sizing.content() : Sizing.fixed(0));
         };
 
         for (int i = 0; i < modes.length; i++) {
             final CustomNameMode mode = modes[i];
             final int idx = i;
-            btns[i] = UIComponents.button(Component.translatable(labelKeys[i]), b -> {
+            btns[i] = UIComponents.button(Component.translatable(getCustomNameModeLabelKey(mode)), b -> {
                 setter.accept(mode);
                 for (int j = 0; j < btns.length; j++)
                     btns[j].renderer(j == idx ? MODE_ON : MODE_OFF);
@@ -146,6 +154,15 @@ public abstract class RegistrySectionComponent {
         container.child(nameRow);
     }
 
+    private String getCustomNameModeLabelKey(CustomNameMode mode) {
+        return switch (mode) {
+            case FILTER -> "actionregulator.ui.customName.filter";
+            case REGEX_FILTER -> "actionregulator.ui.customName.regexFilter";
+            case CUSTOM_NAME -> "actionregulator.ui.customName.custom";
+            case DEFAULT_NAME -> "actionregulator.ui.customName.default";
+        };
+    }
+
     private FlowLayout buildHeader() {
         FlowLayout row = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         row.verticalAlignment(VerticalAlignment.CENTER);
@@ -156,24 +173,31 @@ public abstract class RegistrySectionComponent {
                 .color(Color.ofArgb(0xFF1E648D));
         label.sizing(Sizing.expand(), Sizing.content());
 
-        boolean[] state = { invertGetter.getAsBoolean() };
+        row.child(label);
+        row.child(buildInvertButton(invertGetter, invertSetter));
+        return row;
+    }
+
+    protected static ButtonComponent buildInvertButton(BooleanSupplier getter, Consumer<Boolean> setter) {
+        boolean[] state = { getter.getAsBoolean() };
         ButtonComponent invertBtn = UIComponents.button(
-                Component.translatable(state[0]
-                        ? "actionregulator.ui.registryinvert.on"
-                        : "actionregulator.ui.registryinvert.off"),
+                Component.translatable(invertLabelKey(state[0])),
                 b -> {
                     state[0] = !state[0];
-                    invertSetter.accept(state[0]);
-                    b.setMessage(Component.translatable(state[0]
-                            ? "actionregulator.ui.registryinvert.on"
-                            : "actionregulator.ui.registryinvert.off"));
+                    setter.accept(state[0]);
+                    b.setMessage(Component.translatable(invertLabelKey(state[0])));
                     b.renderer(state[0] ? INVERT_ON : INVERT_OFF);
                 });
         invertBtn.sizing(Sizing.fixed(68), Sizing.fixed(14));
         invertBtn.renderer(state[0] ? INVERT_ON : INVERT_OFF);
+        return invertBtn;
+    }
 
-        row.child(label);
-        row.child(invertBtn);
-        return row;
+    private static String invertLabelKey(boolean on) {
+        return on ? "actionregulator.ui.registryinvert.on" : "actionregulator.ui.registryinvert.off";
+    }
+
+    protected static String toTagSelector(String rawTag) {
+        return rawTag.startsWith("minecraft:") ? rawTag.substring("minecraft:".length()) : rawTag;
     }
 }

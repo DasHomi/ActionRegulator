@@ -4,6 +4,7 @@ import com.dashomi.actionregulator.config.ActionRegulatorConfig;
 import com.dashomi.actionregulator.config.ConfigManager;
 import com.dashomi.actionregulator.config.RuleModule;
 import com.dashomi.actionregulator.config.ui.section.HandItemsSectionComponent;
+import com.dashomi.actionregulator.config.ui.section.PlayerConditionsSectionComponent;
 import com.dashomi.actionregulator.config.ui.section.TargetBlocksSectionComponent;
 import com.dashomi.actionregulator.config.ui.section.TargetEntitiesSectionComponent;
 import com.dashomi.actionregulator.enums.NotificationType;
@@ -121,6 +122,8 @@ public class RuleModuleUi {
 
         body.child(sectionLabel("actionregulator.ui.section.dimensions", 0xFF4EA8DE).margins(Insets.top(4)));
         body.child(new DimensionPickerComponent(rule.activeDimensions).build());
+
+        body.child(new PlayerConditionsSectionComponent(rule).build().margins(Insets.top(4)));
 
         body.child(sectionLabel("actionregulator.ui.section.notification", 0xFF4EA8DE).margins(Insets.top(4)));
 
