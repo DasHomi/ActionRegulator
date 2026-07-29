@@ -1,13 +1,19 @@
 package com.dashomi.actionregulator.config.ui.section;
 
 import com.dashomi.actionregulator.config.RuleModule;
+import com.dashomi.actionregulator.config.ui.ConditionRowComponent;
+import com.dashomi.actionregulator.config.ui.RegistryPickerComponent;
 import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
+import com.dashomi.actionregulator.utils.RegistryStringCreator;
 import io.wispforest.owo.ui.component.ButtonComponent;
+import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.component.UIComponents;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.UIContainers;
+import io.wispforest.owo.ui.core.Color;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
 import java.util.List;
@@ -41,7 +47,7 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
 
     @Override
     protected void buildExtraDropdowns(FlowLayout section) {
-        FlowLayout dropdown = buildDropdown("Extra Options", container -> {
+        FlowLayout dropdown = buildDropdown(Component.translatable("actionregulator.ui.section.extraOptions"), container -> {
 
             FlowLayout handModeRow = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
             handModeRow.verticalAlignment(VerticalAlignment.CENTER);
@@ -134,9 +140,39 @@ public class HandItemsSectionComponent extends RegistrySectionComponent {
                     () -> rule.handItemCustomNameFilter,
                     v -> rule.handItemCustomNameFilter = v
             );
+
+            buildEnchantmentOptions(container);
         });
 
         if (dropdown != null) section.child(dropdown);
+    }
+
+    private void buildEnchantmentOptions(FlowLayout container) {
+        List<String> allEnchantments = RegistryStringCreator.getAllEnchantmentIds();
+
+        LabelComponent header = UIComponents.label(
+                Component.translatable("actionregulator.ui.enchantments.label"))
+                .color(Color.ofArgb(0xFF1E648D));
+        header.margins(Insets.top(4));
+        container.child(header);
+
+        FlowLayout enchantedRow = new ConditionRowComponent(
+                "actionregulator.ui.enchantments.enchanted.label",
+                () -> rule.handItemEnchantedCondition,
+                v -> rule.handItemEnchantedCondition = v).build();
+        enchantedRow.child(buildInvertButton(
+                () -> rule.invertHandItemEnchantments,
+                v -> rule.invertHandItemEnchantments = v));
+        container.child(enchantedRow);
+
+        if (allEnchantments.isEmpty()) {
+            container.child(UIComponents.label(
+                    Component.translatable("actionregulator.ui.enchantments.unavailable"))
+                    .sizing(Sizing.fill(100), Sizing.content()));
+        }
+
+        container.child(new RegistryPickerComponent(
+                rule.handItemEnchantments, allEnchantments, "enchantment").build());
     }
 
     private static String toTagSelector(String rawTag) {

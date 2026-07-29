@@ -3,6 +3,7 @@ package com.dashomi.actionregulator.config.ui.section;
 import com.dashomi.actionregulator.config.RuleModule;
 import io.wispforest.owo.ui.container.FlowLayout;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class TargetEntitiesSectionComponent extends RegistrySectionComponent {
@@ -32,7 +33,7 @@ public class TargetEntitiesSectionComponent extends RegistrySectionComponent {
 
     @Override
     protected void buildExtraDropdowns(FlowLayout section) {
-        FlowLayout dropdown = buildDropdown("Extra Options", container -> {
+        FlowLayout dropdown = buildDropdown(Component.translatable("actionregulator.ui.section.extraOptions"), container -> {
             buildCustomNameOptions(
                     container,
                     () -> rule.targetEntityCustomNameMode,

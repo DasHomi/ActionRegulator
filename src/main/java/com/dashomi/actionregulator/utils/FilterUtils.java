@@ -2,20 +2,22 @@ package com.dashomi.actionregulator.utils;
 
 import com.dashomi.actionregulator.ActionregulatorClient;
 import com.dashomi.actionregulator.config.RuleModule;
-import com.dashomi.actionregulator.enums.BlockConditionMode;
+import com.dashomi.actionregulator.enums.ConditionMode;
 import com.dashomi.actionregulator.enums.CustomNameMode;
 import com.dashomi.actionregulator.enums.HandItemDurabilityMode;
 import com.dashomi.actionregulator.enums.HandItemMode;
-import com.dashomi.actionregulator.enums.PlayerConditionMode;
 import com.dashomi.actionregulator.enums.ThresholdMode;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -24,6 +26,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -57,20 +61,14 @@ public class FilterUtils {
         return !selected.contains(currentMode.name());
     }
 
-    private static boolean conditionFails(PlayerConditionMode mode, boolean state) {
-        if (mode == PlayerConditionMode.REQUIRED) return !state;
-        if (mode == PlayerConditionMode.FORBIDDEN) return state;
+    private static boolean conditionFails(ConditionMode mode, boolean state) {
+        if (mode == ConditionMode.REQUIRED) return !state;
+        if (mode == ConditionMode.FORBIDDEN) return state;
         return false;
     }
 
     public static boolean doesNotMatchBlockConditions(RuleModule rule, BlockState blockState) {
         return conditionFails(rule.waterloggedCondition, isWaterlogged(blockState));
-    }
-
-    private static boolean conditionFails(BlockConditionMode mode, boolean state) {
-        if (mode == BlockConditionMode.REQUIRED) return !state;
-        if (mode == BlockConditionMode.FORBIDDEN) return state;
-        return false;
     }
 
     private static boolean isWaterlogged(BlockState blockState) {
@@ -114,6 +112,10 @@ public class FilterUtils {
             return true;
         }
 
+        if (doesNotMatchHandItemEnchantments(rule, handItem)) {
+            return true;
+        }
+
         boolean hasCustomName = handItem.has(DataComponents.CUSTOM_NAME);
         if (rule.handItemCustomNameMode == CustomNameMode.CUSTOM_NAME && !hasCustomName) {
             return true;
@@ -153,6 +155,25 @@ public class FilterUtils {
         }
 
         return false;
+    }
+
+    private static boolean doesNotMatchHandItemEnchantments(RuleModule rule, ItemStack handItem) {
+        ItemEnchantments enchantments = handItem.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+        if (conditionFails(rule.handItemEnchantedCondition, !enchantments.isEmpty())) {
+            return true;
+        }
+
+        Set<String> presentEnchantments = new HashSet<>();
+        for (Holder<Enchantment> holder : enchantments.keySet()) {
+            holder.unwrapKey().ifPresent(key -> presentEnchantments.add(key.identifier().toString()));
+        }
+
+        return doesNotMatchSetFilter(
+                rule.handItemEnchantments,
+                rule.invertHandItemEnchantments,
+                presentEnchantments
+        );
     }
 
     public static boolean doesNotMatchTargetEntityFilter(RuleModule rule, Entity entity) {
@@ -222,6 +243,23 @@ public class FilterUtils {
             return hasAnySelector && !anyMatch;
         } else {
             return !hasAnySelector || anyMatch;
+        }
+    }
+
+    private static boolean doesNotMatchSetFilter(
+            List<String> idList,
+            boolean invert,
+            Set<String> presentIds
+    ) {
+        List<String> ids = Objects.requireNonNullElse(idList, List.of());
+
+        boolean hasAnySelector = !ids.isEmpty();
+        boolean matched = ids.stream().anyMatch(presentIds::contains);
+
+        if (!invert) {
+            return hasAnySelector && !matched;
+        } else {
+            return !hasAnySelector || matched;
         }
     }
 

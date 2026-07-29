@@ -16,7 +16,7 @@ public class RuleModule {
     public List<String> targetBlocks = new ArrayList<>();
     public List<String> targetBlockTags = new ArrayList<>();
     public boolean invertTargetBlocks = false;
-    public BlockConditionMode waterloggedCondition = BlockConditionMode.IGNORED;
+    public ConditionMode waterloggedCondition = ConditionMode.IGNORED;
 
     // hand item
     public List<String> handItems = new ArrayList<>();
@@ -27,6 +27,9 @@ public class RuleModule {
     public HandItemDurabilityMode handItemDurabilityMode = HandItemDurabilityMode.IGNORED;
     public CustomNameMode handItemCustomNameMode = CustomNameMode.FILTER;
     public String handItemCustomNameFilter = "";
+    public List<String> handItemEnchantments = new ArrayList<>();
+    public boolean invertHandItemEnchantments = false;
+    public ConditionMode handItemEnchantedCondition = ConditionMode.IGNORED;
 
     // target entity
     public List<String> targetEntities = new ArrayList<>();
@@ -36,8 +39,8 @@ public class RuleModule {
     public String targetEntityCustomNameFilter = "";
 
     // player conditions
-    public PlayerConditionMode elytraFlyingCondition = PlayerConditionMode.IGNORED;
-    public PlayerConditionMode swimmingCondition = PlayerConditionMode.IGNORED;
+    public ConditionMode elytraFlyingCondition = ConditionMode.IGNORED;
+    public ConditionMode swimmingCondition = ConditionMode.IGNORED;
     public List<String> activeGameModes = new ArrayList<>(List.of("SURVIVAL", "CREATIVE", "ADVENTURE")); // set of enabled modes; empty = none
     public ThresholdMode healthConditionMode = ThresholdMode.IGNORED;
     public float healthThreshold = -1; // hearts (0-10); -1 = unset

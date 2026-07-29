@@ -24,17 +24,16 @@
   "actionregulator.ui.section.handItems": "Hand Items",
   "actionregulator.ui.section.targetEntities": "Target Entities",
   "actionregulator.ui.section.playerConditions": "Player Conditions",
+  "actionregulator.ui.section.extraOptions": "Extra Options",
+
+  "actionregulator.ui.conditionMode.ignored": "Ignored",
+  "actionregulator.ui.conditionMode.required": "Required",
+  "actionregulator.ui.conditionMode.forbidden": "Forbidden",
 
   "actionregulator.ui.blockConditions.waterlogged": "Waterlogged:",
-  "actionregulator.ui.blockConditions.mode.ignored": "Ignored",
-  "actionregulator.ui.blockConditions.mode.required": "Required",
-  "actionregulator.ui.blockConditions.mode.forbidden": "Forbidden",
 
   "actionregulator.ui.playerConditions.elytra": "Elytra Flying:",
   "actionregulator.ui.playerConditions.swimming": "Swimming:",
-  "actionregulator.ui.playerConditions.mode.ignored": "Ignored",
-  "actionregulator.ui.playerConditions.mode.required": "Required",
-  "actionregulator.ui.playerConditions.mode.forbidden": "Forbidden",
   "actionregulator.ui.playerConditions.gamemode": "Game Mode:",
   "actionregulator.ui.playerConditions.gamemode.survival": "Survival",
   "actionregulator.ui.playerConditions.gamemode.creative": "Creative",
@@ -74,6 +73,10 @@
   "actionregulator.ui.handItems.mode.both": "Both",
   "actionregulator.ui.handItems.mode.mainhand": "Mainhand",
   "actionregulator.ui.handItems.mode.offhand": "Offhand",
+
+  "actionregulator.ui.enchantments.label": "Enchantments",
+  "actionregulator.ui.enchantments.enchanted.label": "Enchanted:",
+  "actionregulator.ui.enchantments.unavailable": "Join a world to browse enchantments.",
 
   "actionregulator.ui.customName.label": "Name mode:",
   "actionregulator.ui.customName.filter": "Filter",

@@ -1,6 +1,6 @@
 package com.dashomi.actionregulator.enums;
 
-public enum PlayerConditionMode {
+public enum ConditionMode {
     IGNORED,
     REQUIRED,
     FORBIDDEN

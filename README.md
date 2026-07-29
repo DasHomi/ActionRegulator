@@ -37,6 +37,19 @@ To make your rules even more precise, registry lists support subconditions.
 - **Custom Name Filter** 
   - **Mode → Filter:** Specify text the item name must contain.
   - **Mode → Regex Filter:** Specify a regular expression the item name must match.
+- **Enchantments:** A list of enchantments the hand item must carry. It follows the
+  same **Default**/**Inverted** table as the other registry lists, matching when the item has **any** of the
+  listed enchantments.
+    - **Enchanted:** Restrict the rule based on whether the item is enchanted at all, with three modes:
+        - **Ignored:** Enchantment presence does not affect the rule.
+        - **Required:** The rule only applies while the item has at least one enchantment.
+        - **Forbidden:** The rule only applies while the item has no enchantments.
+
+  > [!NOTE]
+  > The enchantment list can only be browsed while you are in a world, because enchantments are provided by
+  > the server's data packs. Entries you already picked stay selected everywhere.
+  > Enchanted books obtained normally are **not** matched — they merely *store* their enchantments rather
+  > than having them applied.
 
 **Target Entity Subconditions:**
 - **Custom Name Mode:** Match by **Filter**, **Regex Filter**, **Custom Name**, or **Default Name**.

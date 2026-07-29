@@ -32,6 +32,10 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
                         rule.add("handItemDurabilityMode", new JsonPrimitive("IGNORED"));
                     }
 
+                    ensureTagList(rule, "handItemEnchantments");
+                    ensureBoolean(rule, "invertHandItemEnchantments", false);
+                    ensureIgnored(rule, "handItemEnchantedCondition");
+
                     ensureIgnored(rule, "waterloggedCondition");
 
                     ensureIgnored(rule, "elytraFlyingCondition");
@@ -50,8 +54,18 @@ public class Migration_0_3_0_to_0_4_0 implements ConfigMigration {
     }
 
     private static void ensureIgnored(JsonObject rule, String fieldName) {
+        ensureString(rule, fieldName, "IGNORED");
+    }
+
+    private static void ensureString(JsonObject rule, String fieldName, String value) {
         if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
-            rule.add(fieldName, new JsonPrimitive("IGNORED"));
+            rule.add(fieldName, new JsonPrimitive(value));
+        }
+    }
+
+    private static void ensureBoolean(JsonObject rule, String fieldName, boolean value) {
+        if (!rule.has(fieldName) || rule.get(fieldName).isJsonNull()) {
+            rule.add(fieldName, new JsonPrimitive(value));
         }
     }
 
