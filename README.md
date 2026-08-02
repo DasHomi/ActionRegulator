@@ -105,5 +105,4 @@ I currently have no plans to add support for other mod loaders like Forge or act
 
 ## Dependencies
 - [Fabric API](https://github.com/FabricMC/fabric)
-- [Owo Lib](https://github.com/wisp-forest/owo-lib)
 - [Mod Menu](https://github.com/TerraformersMC/ModMenu) needed to configure rules in the ui
