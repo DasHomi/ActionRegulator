@@ -157,6 +157,20 @@ public abstract class CollapsibleSection extends PanelEntry {
     protected void onExpandedChanged(boolean expanded) {
     }
 
+    /**
+     * Places the header button inside the area left of the header widgets. Subclasses that put their
+     * own widgets in the header shrink the button here and lay out the rest of the area themselves.
+     */
+    protected void arrangeHeader(int x, int y, int width, int height) {
+        header.setPosition(x, y);
+        header.setWidth(width);
+        header.setHeight(height);
+    }
+
+    /** Reports the widgets a subclass placed in the header, right after the header button. */
+    protected void visitHeaderContent(Consumer<AbstractWidget> consumer) {
+    }
+
     // ----------------------------------------------------------------- layout
 
     @Override
@@ -186,9 +200,7 @@ public abstract class CollapsibleSection extends PanelEntry {
             headerRight -= HEADER_WIDGET_SPACING;
         }
 
-        header.setHeight(headerHeight);
-        header.setWidth(Math.max(MIN_HEADER_WIDTH, headerRight - x));
-        header.setPosition(x, y);
+        arrangeHeader(x, y, Math.max(MIN_HEADER_WIDTH, headerRight - x), headerHeight);
 
         if (!expanded) {
             return;
@@ -207,6 +219,7 @@ public abstract class CollapsibleSection extends PanelEntry {
     @Override
     public void visitWidgets(Consumer<AbstractWidget> consumer) {
         consumer.accept(header);
+        visitHeaderContent(consumer);
         for (AbstractWidget widget : headerWidgets) {
             consumer.accept(widget);
         }

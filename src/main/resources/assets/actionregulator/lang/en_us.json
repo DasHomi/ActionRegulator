@@ -9,6 +9,7 @@
   "actionregulator.ui.buttons.exportAll": "⬇ Export All",
   "actionregulator.ui.buttons.done": "Done",
 
+  "actionregulator.ui.module.name": "Module Name",
   "actionregulator.ui.module.collapse": "▼",
   "actionregulator.ui.module.expand": "▶",
   "actionregulator.ui.module.enabled": "ON",

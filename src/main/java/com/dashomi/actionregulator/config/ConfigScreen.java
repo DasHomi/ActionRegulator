@@ -18,9 +18,6 @@ public class ConfigScreen extends Screen {
     private static final int MIN_PANEL_WIDTH = 120;
     private static final int PANEL_MARGIN = 24;
 
-    // debug, remove
-    private static final int DUMMY_MODULE_COUNT = 12;
-
     private final Screen parent;
     private final ActionRegulatorConfig config;
 
@@ -39,7 +36,7 @@ public class ConfigScreen extends Screen {
         int panelHeight = Math.max(MIN_PANEL_HEIGHT, this.height - HEADER_HEIGHT - FOOTER_HEIGHT);
 
         panel = addRenderableWidget(new ScrollPanel((this.width - panelWidth) / 2, HEADER_HEIGHT, panelWidth, panelHeight));
-        buildEntries();
+        buildModules();
         panel.setScrollAmount(scrollAmount);
 
         addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> onClose())
@@ -47,18 +44,16 @@ public class ConfigScreen extends Screen {
                 .build());
     }
 
-    // debugging method to check layouting
-    private void buildEntries() {
-        for (int i = 1; i <= DUMMY_MODULE_COUNT; i++) {
-            ActionRegulatorModule module = panel.addEntry(new ActionRegulatorModule(Component.literal("Dummy 67-" + i), i <= 2));
+    private void buildModules() {
+        for (RuleModule rule : config.rules) {
+            ActionRegulatorModule module = panel.addEntry(new ActionRegulatorModule(this.font, rule.name, rule.expanded));
 
-            module.addEntry(new TextEntry(this.font, Component.literal("Placeholder line for module " + i), TextEntry.MUTED_COLOR));
-            if (i % 3 == 0) {
-                module.addEntry(new TextEntry(this.font, Component.literal(
-                        "A longer placeholder that wraps over several lines once the window gets narrow, "
-                                + "so the entry height changes with the panel width.")));
-            }
-            module.addWidget(Button.builder(Component.literal("Dummy button " + i), button -> {}).build());
+            // placeholder
+            TextEntry nameEcho = module.addEntry(new TextEntry(this.font, Component.literal(rule.name)));
+            module.setNameResponder(name -> {
+                rule.name = name;
+                nameEcho.setText(Component.literal(name));
+            });
         }
     }
 
