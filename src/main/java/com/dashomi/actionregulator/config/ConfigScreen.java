@@ -2,7 +2,6 @@ package com.dashomi.actionregulator.config;
 
 import com.dashomi.actionregulator.config.ui.ActionRegulatorModule;
 import com.dashomi.actionregulator.config.ui.ScrollPanel;
-import com.dashomi.actionregulator.config.ui.widgets.TextEntry;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,13 +46,19 @@ public class ConfigScreen extends Screen {
     private void buildModules() {
         for (RuleModule rule : config.rules) {
             ActionRegulatorModule module = panel.addEntry(new ActionRegulatorModule(this.font, rule.name, rule.expanded));
+            module.setEnabled(rule.enabled);
+            module.setEnabledResponder(enabled -> rule.enabled = enabled);
 
-            // placeholder
-            TextEntry nameEcho = module.addEntry(new TextEntry(this.font, Component.literal(rule.name)));
-            module.setNameResponder(name -> {
-                rule.name = name;
-                nameEcho.setText(Component.literal(name));
-            });
+            module.setTriggerType(rule.triggerType);
+            module.setTriggerResponder(trigger -> rule.triggerType = trigger);
+
+            module.setTargetMode(rule.targetMode);
+            module.setTargetResponder(target -> rule.targetMode = target);
+
+            module.setNotificationType(rule.notificationType);
+            module.setNotificationResponder(notification -> rule.notificationType = notification);
+
+            module.setNameResponder(name -> rule.name = name);
         }
     }
 
